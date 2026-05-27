@@ -329,6 +329,7 @@ function App() {
           if (p.nextId)             setNextId(p.nextId);
           if (p.monthlyPaid)        setMonthlyPaid(p.monthlyPaid);
           if (p.translates?.length) setTranslates(p.translates);
+          if (p.calEvents?.length)  setCalEvents(p.calEvents);
         }
       } catch(e){ console.error("load error", e); }
     };
@@ -337,12 +338,12 @@ function App() {
 
   const persist = useCallback((c,t,f,ce,nid,mp)=>{
     setSyncing(true);
-    const data = {courses:c, tasks:t, freeTasks:f, nextId:nid, monthlyPaid:mp||{}};
+    const data = {courses:c, tasks:t, freeTasks:f, calEvents:ce, nextId:nid, monthlyPaid:mp||{}, translates};
     // 同時寫 Firebase 和 localStorage（雙保險）
     if (window.fbSave) window.fbSave(data);
     try { localStorage.setItem("slashV5", JSON.stringify(data)); } catch(e){}
     setTimeout(()=>setSyncing(false),400);
-  },[]);
+  },[translates]);
 
   // translates 變動時也寫入
   useEffect(()=>{
@@ -614,7 +615,7 @@ function App() {
                       {items.map(t=>(
                         <MiniGanttRow key={t.id} task={t}
                           onInc={()=>logWork(t.id,1,TODAY_STR,"manual")}
-                          onDec={()=>setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId);return u;})}
+                          onDec={()=>setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId,monthlyPaid);return u;})}
                           onDel={()=>delTask(t.id)}
                           onAddTodo={addTaskTodo} onToggleTodo={toggleTaskTodo} onDelTodo={delTaskTodo}
                         />
@@ -637,7 +638,7 @@ function App() {
                       {items.map(t=>(
                         <MiniGanttRow key={t.id} task={t}
                           onInc={()=>logWork(t.id,1,TODAY_STR,"manual")}
-                          onDec={()=>setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId);return u;})}
+                          onDec={()=>setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId,monthlyPaid);return u;})}
                           onDel={()=>delTask(t.id)}
                           onAddTodo={addTaskTodo} onToggleTodo={toggleTaskTodo} onDelTodo={delTaskTodo}
                         />
@@ -661,8 +662,8 @@ function App() {
                         <MiniGanttRow key={t.id} task={t}
                           onInc={()=>t.isFree?logFreeWork(t.id,1):logWork(t.id,1,TODAY_STR,"manual")}
                           onDec={()=>t.isFree
-                            ? setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId);return u;})
-                            : setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId);return u;})
+                            ? setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;})
+                            : setTasks(prev=>{const u=prev.map(tk=>tk.id!==t.id?tk:{...tk,done:Math.max(0,tk.done-1)});persist(courses,u,freeTasks,calEvents,nextId,monthlyPaid);return u;})
                           }
                           onDel={()=>t.isFree?delFree(t.id):delTask(t.id)}
                           onAddTodo={addTaskTodo} onToggleTodo={toggleTaskTodo} onDelTodo={delTaskTodo}
@@ -694,8 +695,8 @@ function App() {
                     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:(t.progress||0)>0?4:0}}>
                       <Chk done={t.done} onToggle={()=>togFree(t.id)}/>
                       <span style={{flex:1,fontSize:12}}>{t.text}</span>
-                      <button onClick={()=>{if((t.progress||0)>0)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId);return u;});}} disabled={(t.progress||0)<=0} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)<=0?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)<=0?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)<=0?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>－</button>
-                      <button onClick={()=>{if((t.progress||0)<10)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.min(10,(f.progress||0)+1),logs:[...(f.logs||[]),{id:Date.now(),date:TODAY_STR,units:1}]});persist(courses,tasks,u,calEvents,nextId);return u;});}} disabled={(t.progress||0)>=10} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)>=10?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)>=10?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)>=10?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>＋</button>
+                      <button onClick={()=>{if((t.progress||0)>0)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)<=0} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)<=0?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)<=0?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)<=0?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>－</button>
+                      <button onClick={()=>{if((t.progress||0)<10)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.min(10,(f.progress||0)+1),logs:[...(f.logs||[]),{id:Date.now(),date:TODAY_STR,units:1}]});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)>=10} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)>=10?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)>=10?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)>=10?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>＋</button>
                       <button onClick={()=>delFree(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:12,padding:0,fontFamily:"inherit"}}>✕</button>
                     </div>
                     {(t.progress||0)>0&&(
