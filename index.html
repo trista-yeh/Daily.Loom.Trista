@@ -1693,7 +1693,7 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
                   <span style={{fontSize:12,fontWeight:500,flex:1,color:"#1F2A44"}}>{t.title}</span>
                   <div style={{display:"flex",gap:5,alignItems:"center",flexShrink:0}}>
                     <button onClick={()=>onEdit(t)} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:11,padding:0,fontFamily:"inherit"}}>✎</button>
-                    <button onClick={()=>onArchive(t.id,"unarchive")} style={btnS("#555","#f0f0f0",{fontSize:10,padding:"3px 10px"})}>↩ 移回進行中</button>
+                    <button onClick={()=>onArchive(t.id,"unarchive")} style={btnS("#555","#f0f0f0",{fontSize:13,padding:"3px 8px"})} title="移回進行中">↩</button>
                   </div>
                 </div>
                 <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
