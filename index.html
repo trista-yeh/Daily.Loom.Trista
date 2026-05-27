@@ -510,7 +510,6 @@ function App() {
     toast2(unarchive?"已移回進行中":"已移至作品集");
     if(unarchive) setTransTab("active");
   };
-  };
   const deleteTrans = id => {
     if (id?.startsWith("task_")) {
       const rawId = id.replace("task_","");
