@@ -464,10 +464,13 @@ function App() {
         color:"#4A5E55", bg:"#DDE8E3",
       };
       const tupd=[...tasks,newTask];
-      setTranslates(prev=>[...prev,nt]);
+      const newTranslates=[...translates,nt];
+      setTranslates(newTranslates);
       setTasks(tupd);
       setNextId(nid+1);
-      persist(courses,tupd,freeTasks,calEvents,nid+1,monthlyPaid);
+      const addData={courses,tasks:tupd,freeTasks,calEvents,nextId:nid+1,monthlyPaid,translates:newTranslates};
+      if(window.fbSave)window.fbSave(addData);
+      try{localStorage.setItem("slashV5",JSON.stringify(addData));}catch(e){}
     } else {
       // task_ 前綴：來自 INIT_TASKS（不在 translates 裡），只更新 tasks
       if(transModal.id?.startsWith("task_")){
@@ -490,7 +493,9 @@ function App() {
           fee:transForm.fee||"",feeBank:transForm.feeBank||"",feeDate:transForm.feeDate||"",
         });
         setTasks(tupd);
-        persist(courses,tupd,freeTasks,calEvents,nextId,monthlyPaid);
+        const saveData = {courses, tasks:tupd, freeTasks, calEvents, nextId, monthlyPaid, translates:upd};
+        if (window.fbSave) window.fbSave(saveData);
+        try { localStorage.setItem("slashV5", JSON.stringify(saveData)); } catch(e){}
       }
     }
     setTransModal(null); toast2("已儲存 ✓");
@@ -498,8 +503,13 @@ function App() {
   const archiveTrans = (id, mode) => {
     const unarchive = mode==="unarchive";
     const upd=translates.map(t=>t.id!==id?t:{...t,archived:!unarchive});
-    setTranslates(upd); toast2(unarchive?"已移回進行中":"已移至作品集");
+    setTranslates(upd);
+    const data = {courses, tasks, freeTasks, calEvents, nextId, monthlyPaid, translates:upd};
+    if (window.fbSave) window.fbSave(data);
+    try { localStorage.setItem("slashV5", JSON.stringify(data)); } catch(e){}
+    toast2(unarchive?"已移回進行中":"已移至作品集");
     if(unarchive) setTransTab("active");
+  };
   };
   const deleteTrans = id => {
     if (id?.startsWith("task_")) {
