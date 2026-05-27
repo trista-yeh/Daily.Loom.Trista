@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Daily Loom · Trista</title>
-  <style>* { margin:0; padding:0; box-sizing:border-box; } body { background:#F3EFEB; }</style>
+  <style>* { margin:0; padding:0; box-sizing:border-box; } body { background:#EDE5D4; }</style>
 </head>
 <body>
   <div id="root"></div>
@@ -52,18 +52,18 @@
   <script type="text/babel">
     const { useState, useEffect, useCallback } = React;
 
-const CAT_COLOR = { gov:"#494E51", local:"#8B5E3C", other:"#5C6B73" };
-const CAT_BG    = { gov:"#E6EDEF", local:"#EEE0D4", other:"#DDE4E8" };
+const CAT_COLOR = { gov:"#1F2A44", local:"#8B5E3C", other:"#4A6080" };
+const CAT_BG    = { gov:"#DDD5C4", local:"#EDD9C4", other:"#D5DFF0" };
 const CAT_LABEL = { gov:"市政府",  local:"地區類",  other:"其他類"  };
 const DAYS_ZH   = ["日","一","二","三","四","五","六"];
 const TODAY     = new Date(2026,4,27);
 const TODAY_STR = "5/27";
 const ROUTINE   = {
-  sport:    { label:"運動", color:"#5C6B73", bg:"#DDE4E8" },
-  koto:     { label:"古箏", color:"#7A6251", bg:"#EDE5DC" },
-  translate:{ label:"翻譯", color:"#4A5E55", bg:"#DDE8E3" },
-  material: { label:"教材", color:"#6B6558", bg:"#EAE6DE" },
-  buffer:   { label:"緩衝", color:"#8C8880", bg:"#F0EDE8" },
+  sport:    { label:"運動", color:"#4A6080", bg:"#D5DFF0" },
+  koto:     { label:"古箏", color:"#7A6251", bg:"#E8DABB" },
+  translate:{ label:"翻譯", color:"#2A4060", bg:"#E8E2D2" },
+  material: { label:"教材", color:"#6B6558", bg:"#E8E0CC" },
+  buffer:   { label:"緩衝", color:"#8C8880", bg:"#F2ECE0" },
 };
 const TIME_SLOTS = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
 
@@ -99,10 +99,10 @@ const sortByDate = arr => [...arr].sort((a,b)=>{
 const slotHour = t => t.split(":")[0];
 
 // ── styles ────────────────────────────────────────────────
-const iStyle  = {width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #E6EDEF",fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",background:"#FCFAF9"};
+const iStyle  = {width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",background:"#FDFAF5"};
 const pill    = (c,bg,ex={}) => ({fontSize:10,padding:"1px 7px",borderRadius:99,background:bg,color:c,...ex});
-const btnS    = (c,bg,ex={}) => ({padding:"6px 14px",borderRadius:8,border:"none",background:bg||"#494E51",color:c||"#F3EFEB",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",...ex});
-const navBtnS = {padding:"4px 10px",borderRadius:8,border:"1.5px solid #E6EDEF",background:"#FCFAF9",color:"#555",fontSize:14,cursor:"pointer",fontFamily:"inherit"};
+const btnS    = (c,bg,ex={}) => ({padding:"6px 14px",borderRadius:8,border:"none",background:bg||"#1F2A44",color:c||"#F0EAE0",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",...ex});
+const navBtnS = {padding:"4px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",background:"#FDFAF5",color:"#555",fontSize:14,cursor:"pointer",fontFamily:"inherit"};
 
 // ── initial data ──────────────────────────────────────────
 const INIT_COURSES = [
@@ -140,7 +140,7 @@ const INIT_COURSES = [
 ];
 // 備課/教材統一同一顏色
 const TEACH_COLOR = "#6B6558";
-const TEACH_BG    = "#EAE6DE";
+const TEACH_BG    = "#E8E0CC";
 const genTeachTasks = cs => cs.map(c=>({
   id:`teach_${c.id}`, type:"teach",
   name:`教材：${c.location.replace("香山區-","").replace("(華鹿)","").replace("(懷安)","")} 第${c.session}堂`,
@@ -390,8 +390,8 @@ function App() {
     const t={id:`w${nextId}`,type:taskForm.type,name:taskForm.name,deadline:taskForm.deadline,
       segments:10,done:0,logs:[],todos:[],
       fee:taskForm.fee||"",feeBank:taskForm.feeBank||"",feeDate:taskForm.feeDate||"",feePaid:false,
-      color:taskForm.type==="translate"?"#4A5E55":"#6B6558",
-      bg:taskForm.type==="translate"?"#DDE8E3":taskForm.type==="other"?"#DDE4E8":"#EAE6DE"};
+      color:taskForm.type==="translate"?"#2A4060":"#6B6558",
+      bg:taskForm.type==="translate"?"#E8E2D2":taskForm.type==="other"?"#D5DFF0":"#E8E0CC"};
     const upd=[...tasks,t],nid=nextId+1;
     setTasks(upd);setNextId(nid);persist(courses,upd,freeTasks,calEvents,nid,monthlyPaid);
     setTaskModal(false);setTaskForm(EMPTY_TASK);toast2("已新增任務 ✓");
@@ -461,7 +461,7 @@ function App() {
         segments:10, done:0, logs:[], todos:[],
         fee:transForm.fee||"", feeBank:transForm.feeBank||"",
         feeDate:transForm.feeDate||"", feePaid:false,
-        color:"#4A5E55", bg:"#DDE8E3",
+        color:"#2A4060", bg:"#E8E2D2",
       };
       const tupd=[...tasks,newTask];
       const newTranslates=[...translates,nt];
@@ -573,20 +573,20 @@ function App() {
   });
 
   return (
-    <div style={{fontFamily:"'Noto Sans TC',sans-serif",background:"#F3EFEB",minHeight:"100vh",paddingBottom:80}}>
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+    <div style={{fontFamily:"'Noto Sans TC',sans-serif",background:"#EDE5D4",minHeight:"100vh",paddingBottom:80}}>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet"/>
       {toast&&<div style={{position:"fixed",top:14,left:"50%",transform:"translateX(-50%)",zIndex:999,background:toast.type==="err"?"#c0392b":"#111",color:"#fff",padding:"9px 20px",borderRadius:24,fontSize:13,fontWeight:600,whiteSpace:"nowrap"}}>{toast.msg}</div>}
-      {syncing&&<div style={{position:"fixed",bottom:18,right:14,zIndex:400,background:"#494E51",color:"#E6EDEF",borderRadius:20,padding:"5px 12px",fontSize:11}}>☁️ 同步…</div>}
+      {syncing&&<div style={{position:"fixed",bottom:18,right:14,zIndex:400,background:"#1F2A44",color:"#DDD5C4",borderRadius:20,padding:"5px 12px",fontSize:11}}>☁️ 同步…</div>}
 
       {/* Header */}
-      <div style={{background:"#494E51",color:"#F3EFEB",padding:"18px 16px 14px"}}>
-        <div style={{fontSize:8,letterSpacing:5,color:"#ABBCC4",marginBottom:4,textTransform:"uppercase",fontWeight:500}}>Daily Loom · Trista</div>
-        <div style={{fontSize:20,fontWeight:900,fontFamily:"'DM Serif Display',serif",letterSpacing:".3px",lineHeight:1.15}}>A softer way to manage life</div>
+      <div style={{background:"#1F2A44",color:"#F0EAE0",padding:"18px 16px 14px"}}>
+        <div style={{fontSize:10,letterSpacing:3,color:"#C6A75E",marginBottom:5,fontWeight:500,textTransform:"uppercase"}}>A SOFTER WAY TO MANAGE LIFE</div>
+        <div style={{fontFamily:"'Raleway',sans-serif",fontWeight:300,fontSize:22,letterSpacing:"6px",lineHeight:1.1,color:"#FDFAF5",textTransform:"uppercase"}}>DAILY LOOM · TRISTA</div>
         <div style={{marginTop:12,display:"flex",gap:5,flexWrap:"wrap"}}>
-          {[["week","☽ 行事曆"],["home","◎ 工作台"],["month","⊞ 課程表"],["trans","⟐ 翻譯誌"],["finance","◈ 財務簿"]].map(([v,l])=>(
+          {[["week","☽ 行事曆"],["home","◎ 工作"],["month","⊞ 課表"],["trans","⟐ 翻譯"],["finance","◈ 財務"]].map(([v,l])=>(
             <button key={v} onClick={()=>setView(v)} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,letterSpacing:".5px",fontFamily:"inherit",
-              background:view===v?"#CEB9A6":"rgba(255,255,255,.1)",
-              color:view===v?"#494E51":"#C9D7DD",
+              background:view===v?"#C6A75E":"rgba(255,255,255,.1)",
+              color:view===v?"#1F2A44":"#E8DFC8",
               transition:"background .2s,color .2s"}}>{l}</button>
           ))}
         </div>
@@ -598,10 +598,10 @@ function App() {
         {view==="home"&&(
           <div>
             {/* Filter tabs */}
-            <div style={{display:"flex",gap:5,marginBottom:10,background:"#FCFAF9",borderRadius:12,padding:"6px",boxShadow:"0 1px 4px rgba(73,78,81,.07)"}}>
+            <div style={{display:"flex",gap:5,marginBottom:10,background:"#FDFAF5",borderRadius:12,padding:"6px",boxShadow:"0 1px 4px rgba(73,78,81,.07)"}}>
               {[["tasks","▸ 進行中任務"],["todos","↳ 隨手代辦"],["courses","⊞ 近期課程"]].map(([k,l])=>(
                 <button key={k} onClick={()=>setHomeTab(k)} style={{flex:1,padding:"6px 4px",borderRadius:8,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,letterSpacing:".3px",
-                  background:homeTab===k?"#494E51":"transparent",color:homeTab===k?"#F3EFEB":"#ABBCC4",fontFamily:"inherit",transition:"background .2s,color .2s"}}>{l}</button>
+                  background:homeTab===k?"#1F2A44":"transparent",color:homeTab===k?"#F0EAE0":"#8A9BB5",fontFamily:"inherit",transition:"background .2s,color .2s"}}>{l}</button>
               ))}
             </div>
 
@@ -617,9 +617,9 @@ function App() {
                   return (
                     <div style={{marginBottom:12}}>
                       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-                        <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color:"#4A5E55",textTransform:"uppercase"}}>⟐ 翻譯</span>
-                        <span style={{fontSize:10,color:"#ABBCC4"}}>{items.length} 件</span>
-                        <div style={{flex:1,height:"1px",background:"#DDE8E3"}}/>
+                        <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color:"#2A4060",textTransform:"uppercase"}}>⟐ 翻譯</span>
+                        <span style={{fontSize:10,color:"#8A9BB5"}}>{items.length} 件</span>
+                        <div style={{flex:1,height:"1px",background:"#E8E2D2"}}/>
                       </div>
                       {items.map(t=>(
                         <MiniGanttRow key={t.id} task={t}
@@ -641,8 +641,8 @@ function App() {
                     <div style={{marginBottom:12}}>
                       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
                         <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color:"#6B6558",textTransform:"uppercase"}}>⊞ 備課</span>
-                        <span style={{fontSize:10,color:"#ABBCC4"}}>{items.length} 件</span>
-                        <div style={{flex:1,height:"1px",background:"#EAE6DE"}}/>
+                        <span style={{fontSize:10,color:"#8A9BB5"}}>{items.length} 件</span>
+                        <div style={{flex:1,height:"1px",background:"#E8E0CC"}}/>
                       </div>
                       {items.map(t=>(
                         <MiniGanttRow key={t.id} task={t}
@@ -663,9 +663,9 @@ function App() {
                   return (
                     <div style={{marginBottom:12}}>
                       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
-                        <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color:"#5C6B73",textTransform:"uppercase"}}>◎ 其他</span>
-                        <span style={{fontSize:10,color:"#ABBCC4"}}>{items.length} 件</span>
-                        <div style={{flex:1,height:"1px",background:"#DDE4E8"}}/>
+                        <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color:"#4A6080",textTransform:"uppercase"}}>◎ 其他</span>
+                        <span style={{fontSize:10,color:"#8A9BB5"}}>{items.length} 件</span>
+                        <div style={{flex:1,height:"1px",background:"#D5DFF0"}}/>
                       </div>
                       {items.map(t=>(
                         <MiniGanttRow key={t.id} task={t}
@@ -692,7 +692,7 @@ function App() {
             {/* Todos panel */}
             {homeTab==="todos"&&(
               <div>
-                <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px",marginBottom:8}}>
+                <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px",marginBottom:8}}>
                   <div style={{fontSize:11,fontWeight:700,marginBottom:6}}>◎ 快速新增</div>
                   <div style={{display:"flex",gap:6}}>
                     <input value={freeInput} onChange={e=>setFreeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addFree()} placeholder="任何事都可以丟進來…" style={{...iStyle,flex:1}}/>
@@ -700,12 +700,12 @@ function App() {
                   </div>
                 </div>
                 {pendingFree.map(t=>(
-                  <div key={t.id} style={{background:"#FCFAF9",borderRadius:8,padding:"8px 10px",marginBottom:4}}>
+                  <div key={t.id} style={{background:"#FDFAF5",borderRadius:8,padding:"8px 10px",marginBottom:4}}>
                     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:(t.progress||0)>0?4:0}}>
                       <Chk done={t.done} onToggle={()=>togFree(t.id)}/>
                       <span style={{flex:1,fontSize:12}}>{t.text}</span>
-                      <button onClick={()=>{if((t.progress||0)>0)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)<=0} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)<=0?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)<=0?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)<=0?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>－</button>
-                      <button onClick={()=>{if((t.progress||0)<10)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.min(10,(f.progress||0)+1),logs:[...(f.logs||[]),{id:Date.now(),date:TODAY_STR,units:1}]});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)>=10} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)>=10?"#eee":"#8B5CF6"}`,background:"#FCFAF9",color:(t.progress||0)>=10?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)>=10?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>＋</button>
+                      <button onClick={()=>{if((t.progress||0)>0)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.max(0,(f.progress||0)-1)});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)<=0} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)<=0?"#eee":"#8B5CF6"}`,background:"#FDFAF5",color:(t.progress||0)<=0?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)<=0?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>－</button>
+                      <button onClick={()=>{if((t.progress||0)<10)setFreeTasks(prev=>{const u=prev.map(f=>f.id!==t.id?f:{...f,progress:Math.min(10,(f.progress||0)+1),logs:[...(f.logs||[]),{id:Date.now(),date:TODAY_STR,units:1}]});persist(courses,tasks,u,calEvents,nextId,monthlyPaid);return u;});}} disabled={(t.progress||0)>=10} style={{width:24,height:24,borderRadius:5,border:`1.5px solid ${(t.progress||0)>=10?"#eee":"#8B5CF6"}`,background:"#FDFAF5",color:(t.progress||0)>=10?"#ddd":"#8B5CF6",fontSize:13,fontWeight:700,cursor:(t.progress||0)>=10?"default":"pointer",fontFamily:"inherit",padding:0,lineHeight:1}}>＋</button>
                       <button onClick={()=>delFree(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:12,padding:0,fontFamily:"inherit"}}>✕</button>
                     </div>
                     {(t.progress||0)>0&&(
@@ -716,7 +716,7 @@ function App() {
                   </div>
                 ))}
                 {pendingTodos.slice(0,5).map(t=>(
-                  <div key={t.id} style={{background:"#FCFAF9",borderRadius:8,padding:"8px 10px",marginBottom:4,display:"flex",alignItems:"center",gap:8}}>
+                  <div key={t.id} style={{background:"#FDFAF5",borderRadius:8,padding:"8px 10px",marginBottom:4,display:"flex",alignItems:"center",gap:8}}>
                     <Chk done={t.done} onToggle={()=>toggleTodo(t.cid,t.id)}/>
                     <div style={{flex:1}}>
                       <div style={{fontSize:12}}>{t.text}</div>
@@ -808,7 +808,7 @@ function App() {
       {/* ── Course Modal ── */}
       {courseModal&&(
         <OvBox onClick={()=>setCourseModal(null)}>
-          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FCFAF9",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:380,maxHeight:"90vh",overflowY:"auto"}}>
+          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:380,maxHeight:"90vh",overflowY:"auto"}}>
             <div style={{fontSize:14,fontWeight:700,marginBottom:12}}>{courseModal.mode==="add"?"新增課程":"編輯課程"}</div>
             <div style={{display:"flex",gap:6,marginBottom:10}}>
               {[["gov","市政府"],["local","地區類"],["other","其他類"]].map(([k,v])=>(
@@ -845,7 +845,7 @@ function App() {
       {/* ── Paid Modal ── */}
       {paidModal&&(
         <OvBox onClick={()=>setPaidModal(null)}>
-          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FCFAF9",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:300}}>
+          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:300}}>
             {paidModal.currentPaid
               ? <>
                   <div style={{fontSize:14,fontWeight:700,marginBottom:8}}>取消入帳？</div>
@@ -877,7 +877,7 @@ function App() {
       {/* ── Trans Modal ── */}
       {transModal&&(
         <OvBox onClick={()=>{setTransModal(null);setConfirmDelete(false);}}>
-          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FCFAF9",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:380,maxHeight:"90vh",overflowY:"auto"}}>
+          <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:380,maxHeight:"90vh",overflowY:"auto"}}>
             <div style={{fontSize:14,fontWeight:700,marginBottom:12}}>{transModal.mode==="add"?"新增翻譯案件":"編輯"}</div>
             <Fld label="出版社"><input value={transForm.publisher} onChange={e=>setTransForm(f=>({...f,publisher:e.target.value}))} placeholder="東方、維京、小魯…" style={iStyle}/></Fld>
             <Fld label="書名" required><input value={transForm.title} onChange={e=>setTransForm(f=>({...f,title:e.target.value}))} placeholder="書名（原文或暫名）" style={iStyle}/></Fld>
@@ -902,17 +902,17 @@ function App() {
                   ? <div style={{display:"flex",alignItems:"center",gap:6}}>
                       <span style={{fontSize:11,color:"#888"}}>確定刪除？</span>
                       <button onClick={()=>{deleteTrans(transModal.id);setTransModal(null);setConfirmDelete(false);}}
-                        style={{fontSize:11,padding:"4px 10px",borderRadius:7,border:"none",background:"#494E51",color:"#F3EFEB",cursor:"pointer",fontFamily:"inherit"}}>確定</button>
+                        style={{fontSize:11,padding:"4px 10px",borderRadius:7,border:"none",background:"#1F2A44",color:"#F0EAE0",cursor:"pointer",fontFamily:"inherit"}}>確定</button>
                       <button onClick={()=>setConfirmDelete(false)}
-                        style={{fontSize:11,padding:"4px 10px",borderRadius:7,border:"1px solid #E6EDEF",background:"none",color:"#888",cursor:"pointer",fontFamily:"inherit"}}>取消</button>
+                        style={{fontSize:11,padding:"4px 10px",borderRadius:7,border:"1px solid #DDD5C4",background:"none",color:"#888",cursor:"pointer",fontFamily:"inherit"}}>取消</button>
                     </div>
                   : <button onClick={()=>setConfirmDelete(true)}
-                      style={{fontSize:11,padding:"5px 10px",borderRadius:7,border:"1px solid #E6EDEF",background:"none",color:"#ABBCC4",cursor:"pointer",fontFamily:"inherit"}}>
+                      style={{fontSize:11,padding:"5px 10px",borderRadius:7,border:"1px solid #DDD5C4",background:"none",color:"#8A9BB5",cursor:"pointer",fontFamily:"inherit"}}>
                       刪除整筆資料
                     </button>
               )}
               <div style={{display:"flex",gap:7,marginLeft:"auto"}}>
-                <button onClick={()=>{setTransModal(null);setConfirmDelete(false);}} style={btnS("#6B6558","#EAE6DE")}>取消</button>
+                <button onClick={()=>{setTransModal(null);setConfirmDelete(false);}} style={btnS("#6B6558","#E8E0CC")}>取消</button>
                 <button onClick={saveTranslate} style={btnS()}>儲存</button>
               </div>
             </div>
@@ -923,14 +923,14 @@ function App() {
       {/* ── Task Modal ── */}
       {taskModal&&(
         <OvBox onClick={()=>setTaskModal(false)}>
-          <div onClick={e=>e.stopPropagation()} style={{background:"#FCFAF9",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:320}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:320}}>
             <div style={{fontSize:14,fontWeight:700,marginBottom:12}}>新增工作任務</div>
             <div style={{display:"flex",gap:6,marginBottom:10}}>
               {[["translate","翻譯"],["material","教材"],["other","其他"]].map(([k,v])=>(
                 <button key={k} onClick={()=>setTaskForm(f=>({...f,type:k}))} style={{flex:1,padding:"6px",borderRadius:7,border:"1.5px solid",
-                  borderColor:taskForm.type===k?(k==="translate"?"#4A5E55":k==="other"?"#5C6B73":"#6B6558"):"#e0e0e0",
-                  background:taskForm.type===k?(k==="translate"?"#DDE8E3":k==="other"?"#DDE4E8":"#EAE6DE"):"#fff",
-                  color:taskForm.type===k?(k==="translate"?"#4A5E55":k==="other"?"#5C6B73":"#6B6558"):"#888",
+                  borderColor:taskForm.type===k?(k==="translate"?"#2A4060":k==="other"?"#4A6080":"#6B6558"):"#e0e0e0",
+                  background:taskForm.type===k?(k==="translate"?"#E8E2D2":k==="other"?"#D5DFF0":"#E8E0CC"):"#fff",
+                  color:taskForm.type===k?(k==="translate"?"#2A4060":k==="other"?"#4A6080":"#6B6558"):"#888",
                   fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{v}</button>
               ))}
             </div>
@@ -989,16 +989,16 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
         <div style={{display:"grid",gridTemplateColumns:"28px repeat(7,1fr)",gap:2,minWidth:360}}>
           <div/>
           {weekDates.map((dt,i)=>(
-            <div key={dt} style={{textAlign:"center",padding:"4px 0",background:dt===TODAY_STR?"#494E51":i>=5?"#E9E7E2":"#FCFAF9",borderRadius:6,marginBottom:2}}>
-              <div style={{fontSize:9,color:dt===TODAY_STR?"#ABBCC4":i>=5?"#aaa":"#aaa"}}>{DAY_LABELS[i]}</div>
-              <div style={{fontSize:11,fontWeight:700,color:dt===TODAY_STR?"#ABBCC4":i>=5?"#5C6B73":"#494E51"}}>{dt}</div>
+            <div key={dt} style={{textAlign:"center",padding:"4px 0",background:dt===TODAY_STR?"#1F2A44":i>=5?"#EAE3D3":"#FDFAF5",borderRadius:6,marginBottom:2}}>
+              <div style={{fontSize:11,color:dt===TODAY_STR?"#8A9BB5":i>=5?"#aaa":"#aaa"}}>{DAY_LABELS[i]}</div>
+              <div style={{fontSize:13,fontWeight:700,color:dt===TODAY_STR?"#8A9BB5":i>=5?"#4A6080":"#1F2A44"}}>{dt}</div>
             </div>
           ))}
 
           {/* Time label column */}
-          <div style={{display:"grid",gridTemplateRows:`repeat(${TOTAL_HRS},36px)`,gap:2}}>
+          <div style={{display:"grid",gridTemplateRows:`repeat(${TOTAL_HRS},42px)`,gap:2}}>
             {HOURS.map(hr=>(
-              <div key={hr} style={{fontSize:8,color:"#bbb",textAlign:"right",paddingRight:3,paddingTop:4,lineHeight:1,height:36}}>{hr}</div>
+              <div key={hr} style={{fontSize:10,color:"#bbb",textAlign:"right",paddingRight:3,paddingTop:4,lineHeight:1,height:42}}>{hr}</div>
             ))}
           </div>
 
@@ -1034,7 +1034,7 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
             return (
               <div key={dt} style={{
                 display:"grid",
-                gridTemplateRows:`repeat(${TOTAL_HRS},36px)`,
+                gridTemplateRows:`repeat(${TOTAL_HRS},42px)`,
                 gridTemplateColumns:"1fr",
                 gap:2,
                 position:"relative",
@@ -1043,8 +1043,8 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                   const isWeekend=di>=5;
                   return (
                     <div key={hr}
-                      style={{gridRow:hi+1,gridColumn:1,background:isWeekend?"#E9E7E2":"#FCFAF9",
-                        borderRadius:3,border:`0.5px solid ${isWeekend?"#D8D5CE":"#E6EDEF"}`,
+                      style={{gridRow:hi+1,gridColumn:1,background:isWeekend?"#EAE3D3":"#FDFAF5",
+                        borderRadius:3,border:`0.5px solid ${isWeekend?"#D8D5CE":"#DDD5C4"}`,
                         position:"relative"}}>
                     </div>
                   );
@@ -1053,9 +1053,9 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                 {/* Translate deadline blocks (8:00-9:00 slot) */}
                 {[...transDeadlines,...transPaid].map((t,idx)=>{
                   const isPaid=transPaid.includes(t);
-                  const bg    =expTrans===t.id?(isPaid?"#C9D7DD":"#E8DDD4"):(isPaid?"#DDE4E8":"#EDE5DC");
-                  const bdr   =expTrans===t.id?(isPaid?"1.5px solid #5C6B73":"1.5px solid #7A6251"):(isPaid?"1px solid #ABBCC4":"1px solid #CEB9A6");
-                  const color =isPaid?"#494E51":"#6B4F3A";
+                  const bg    =expTrans===t.id?(isPaid?"#C9D7DD":"#E8DDD4"):(isPaid?"#D5DFF0":"#E8DABB");
+                  const bdr   =expTrans===t.id?(isPaid?"1.5px solid #4A6080":"1.5px solid #7A6251"):(isPaid?"1px solid #8A9BB5":"1px solid #C6A75E");
+                  const color =isPaid?"#1F2A44":"#6B4F3A";
                   const label =isPaid?"◈":"⟐";
                   const shortName=t.name.replace(/^\[.*?\]\s*/,"");
                   // stack multiple items: each takes rowStart=1 but offset via marginTop hack
@@ -1066,8 +1066,8 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                         background:bg,borderRadius:4,padding:"4px 6px",cursor:"pointer",
                         border:bdr,overflow:"hidden",zIndex:2+idx,
                         marginTop:idx*38}}>
-                      <div style={{fontSize:8,color,fontWeight:700,lineHeight:1.4}}>{label} 翻譯</div>
-                      <div style={{fontSize:8,color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{shortName}</div>
+                      <div style={{fontSize:10,color,fontWeight:700,lineHeight:1.4}}>{label} 翻譯</div>
+                      <div style={{fontSize:10,color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{shortName}</div>
 
                     </div>
                   );
@@ -1083,12 +1083,12 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                     <div key={c.id}
                       onClick={e=>{e.stopPropagation();setExpCourse(expCourse===c.id?null:c.id);}}
                       style={{gridRow:`${g.rowStart} / span ${clamp}`,gridColumn:1,
-                        background:"#DDE4E8",borderRadius:4,padding:"4px 6px",cursor:"pointer",
-                        border:expCourse===c.id?"1.5px solid #494E51":"1px solid #ABBCC4",
+                        background:"#D5DFF0",borderRadius:4,padding:"4px 6px",cursor:"pointer",
+                        border:expCourse===c.id?"1.5px solid #1F2A44":"1px solid #8A9BB5",
                         overflow:"hidden",zIndex:2}}>
-                      <div style={{fontSize:8,color:"#494E51",fontWeight:700,lineHeight:1.4}}>⊞ 授課</div>
-                      <div style={{fontSize:8,color:"#5C6B73",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.location.replace("香山區-","").replace("(華鹿)","").replace("(懷安)","")}</div>
-                      <div style={{fontSize:7,color:"#8C9BA3"}}>{c.time}</div>
+                      <div style={{fontSize:10,color:"#1F2A44",fontWeight:700,lineHeight:1.4}}>⊞ 授課</div>
+                      <div style={{fontSize:10,color:"#4A6080",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.location.replace("香山區-","").replace("(華鹿)","").replace("(懷安)","")}</div>
+                      <div style={{fontSize:9,color:"#8C9BA3"}}>{c.time}</div>
                     </div>
                   );
                 })}
@@ -1149,13 +1149,13 @@ function MonthView({courses,allMonths,selMonth,setSelMonth,expCourse,setExpCours
         {allMonths.map(m=>(
           <button key={m} onClick={()=>setSelMonth(m)}
             style={{padding:"4px 10px",borderRadius:16,border:"1.5px solid",fontSize:11,cursor:"pointer",fontFamily:"inherit",
-              borderColor:selMonth===m?"#494E51":"#e0e0e0",background:selMonth===m?"#494E51":"#fff",color:selMonth===m?"#fff":"#555"}}>
+              borderColor:selMonth===m?"#1F2A44":"#e0e0e0",background:selMonth===m?"#1F2A44":"#fff",color:selMonth===m?"#fff":"#555"}}>
             {m}月
           </button>
         ))}
         <button onClick={onAdd} style={{...btnS(),marginLeft:"auto",padding:"4px 12px",fontSize:11}}>＋ 新增課程</button>
       </div>
-      <div style={{background:"#FCFAF9",borderRadius:10,padding:"8px",marginBottom:8}}>
+      <div style={{background:"#FDFAF5",borderRadius:10,padding:"8px",marginBottom:8}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:1,marginBottom:3}}>
           {["一","二","三","四","五","六","日"].map(d=><div key={d} style={{textAlign:"center",fontSize:9,color:"#ccc"}}>{d}</div>)}
         </div>
@@ -1167,8 +1167,8 @@ function MonthView({courses,allMonths,selMonth,setSelMonth,expCourse,setExpCours
             return (
               <div key={i} onClick={()=>ts.length&&setExpCourse(ts[0].id===expCourse?null:ts[0].id)}
                 style={{textAlign:"center",padding:"3px 1px",borderRadius:4,cursor:ts.length?"pointer":"default",
-                  background:ds===TODAY_STR?"#494E51":ts.length?"#E0E5E4":isWeekend?"#f8f5f0":"transparent"}}>
-                <div style={{fontSize:10,color:ds===TODAY_STR?"#ABBCC4":ts.length?"#4E5E5C":isWeekend?"#bbb":"#555"}}>{day}</div>
+                  background:ds===TODAY_STR?"#1F2A44":ts.length?"#D4DCED":isWeekend?"#f8f5f0":"transparent"}}>
+                <div style={{fontSize:10,color:ds===TODAY_STR?"#8A9BB5":ts.length?"#4E5E5C":isWeekend?"#bbb":"#555"}}>{day}</div>
                 {ts.length>0&&<div style={{fontSize:7,color:"#7A9290"}}>{"•".repeat(Math.min(ts.length,3))}</div>}
               </div>
             );
@@ -1206,7 +1206,7 @@ function TodosView({courses,freeTasks,freeInput,setFreeInput,addFree,togFree,del
   const fpend=freeTasks.filter(t=>!t.done), fdone=freeTasks.filter(t=>t.done);
   return (
     <div>
-      <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px",marginBottom:8}}>
+      <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px",marginBottom:8}}>
         <div style={{fontSize:11,fontWeight:700,marginBottom:6}}>📥 快速新增待辦</div>
         <div style={{display:"flex",gap:6}}>
           <input value={freeInput} onChange={e=>setFreeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addFree()} placeholder="任何事都可以丟進來…" style={{...iStyle,flex:1}}/>
@@ -1214,7 +1214,7 @@ function TodosView({courses,freeTasks,freeInput,setFreeInput,addFree,togFree,del
         </div>
       </div>
       <div style={{display:"flex",gap:6,marginBottom:8}}>
-        {[["備課待辦",pending.length,"#4E5E5C","#E0E5E4"],["一般待辦",fpend.length,"#5C6B73","#DDE4E8"],["已完成",done.length+fdone.length,"#6B6558","#EAE6DE"]].map(([l,v,c,bg])=>(
+        {[["備課待辦",pending.length,"#4E5E5C","#D4DCED"],["一般待辦",fpend.length,"#4A6080","#D5DFF0"],["已完成",done.length+fdone.length,"#6B6558","#E8E0CC"]].map(([l,v,c,bg])=>(
           <div key={l} style={{flex:1,background:bg,borderRadius:8,padding:"7px",textAlign:"center"}}>
             <div style={{fontSize:9,color:c}}>{l}</div>
             <div style={{fontSize:18,fontWeight:700,color:c}}>{v}</div>
@@ -1222,21 +1222,21 @@ function TodosView({courses,freeTasks,freeInput,setFreeInput,addFree,togFree,del
         ))}
       </div>
       {fpend.length>0&&(
-        <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px",marginBottom:6}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#5C6B73",marginBottom:5}}>一般待辦</div>
+        <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px",marginBottom:6}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#4A6080",marginBottom:5}}>一般待辦</div>
           {fpend.map(t=>(
             <div key={t.id} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 0",borderBottom:"0.5px solid #f5f5f5"}}>
               <Chk done={t.done} onToggle={()=>togFree(t.id)}/>
               <span style={{flex:1,fontSize:11}}>{t.text}</span>
-              {(t.progress||0)>0&&<span style={{fontSize:9,color:"#5C6B73"}}>{t.progress}/10</span>}
-              <button onClick={()=>onLogFree(t)} style={btnS("#5C6B73","#DDE4E8",{fontSize:9,padding:"2px 6px"})}>記錄進度</button>
+              {(t.progress||0)>0&&<span style={{fontSize:9,color:"#4A6080"}}>{t.progress}/10</span>}
+              <button onClick={()=>onLogFree(t)} style={btnS("#4A6080","#D5DFF0",{fontSize:9,padding:"2px 6px"})}>記錄進度</button>
               <button onClick={()=>delFree(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:11,padding:0}}>✕</button>
             </div>
           ))}
         </div>
       )}
       {pending.length>0&&(
-        <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px",marginBottom:6}}>
+        <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px",marginBottom:6}}>
           <div style={{fontSize:11,fontWeight:700,color:"#4E5E5C",marginBottom:5}}>備課待辦</div>
           {pending.map(t=>(
             <div key={t.id} style={{marginBottom:3}}>
@@ -1251,7 +1251,7 @@ function TodosView({courses,freeTasks,freeInput,setFreeInput,addFree,togFree,del
         </div>
       )}
       {(fdone.length+done.length)>0&&(
-        <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px",opacity:.6}}>
+        <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px",opacity:.6}}>
           <div style={{fontSize:11,color:"#aaa",marginBottom:4}}>已完成 ({fdone.length+done.length})</div>
           {fdone.map(t=><div key={t.id} style={{display:"flex",gap:7,padding:"3px 0",alignItems:"center"}}><Chk done onToggle={()=>togFree(t.id)}/><span style={{fontSize:11,color:"#bbb",}}>{t.text}</span></div>)}
           {done.map(t=><div key={t.id} style={{display:"flex",gap:7,padding:"3px 0",alignItems:"center"}}><Chk done onToggle={()=>toggleTodo(t.cid,t.id)}/><span style={{fontSize:11,color:"#bbb",}}>{t.text}</span></div>)}
@@ -1274,7 +1274,7 @@ function LogModal({logModal,tasks,freeTasks,onClose,onConfirm}) {
   const rem=sel?.remaining||0;
   return (
     <OvBox onClick={onClose}>
-      <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FCFAF9",borderRadius:14,padding:"16px",width:"100%",maxWidth:320}}>
+      <div onMouseDown={e=>e.stopPropagation()} onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"16px",width:"100%",maxWidth:320}}>
         <div style={{fontSize:14,fontWeight:700,marginBottom:3}}>記錄工作進度</div>
         <div style={{fontSize:11,color:"#aaa",marginBottom:8}}>{logModal.slotDate}{logModal.slotTime?" · "+logModal.slotTime:""}</div>
         <div style={{display:"flex",flexDirection:"column",gap:4,maxHeight:180,overflowY:"auto",marginBottom:10}}>
@@ -1285,7 +1285,7 @@ function LogModal({logModal,tasks,freeTasks,onClose,onConfirm}) {
                 <span style={{fontSize:11,fontWeight:600,color:selId===t.id?t.color:"#555"}}>{t.displayName}</span>
                 <span style={{fontSize:10,color:"#aaa"}}>{t.done}/10</span>
               </div>
-              <div style={{marginTop:3,height:3,background:"#E6EDEF",borderRadius:2}}>
+              <div style={{marginTop:3,height:3,background:"#DDD5C4",borderRadius:2}}>
                 <div style={{width:`${t.done*10}%`,height:"100%",background:t.color}}/>
               </div>
               {t.deadline&&<div style={{fontSize:9,color:daysUntil(t.deadline)<=3?"#c0392b":daysUntil(t.deadline)<=7?"#e67e22":"#888",marginTop:1}}>截止 {t.deadline}・{daysUntil(t.deadline)>0?`${daysUntil(t.deadline)}天`:"今天"}</div>}
@@ -1296,7 +1296,7 @@ function LogModal({logModal,tasks,freeTasks,onClose,onConfirm}) {
           <div style={{fontSize:11,color:"#555",marginBottom:5}}>完成等分（剩 {rem}）</div>
           <div style={{display:"flex",gap:5}}>
             {[1,2,3,4,5].filter(u=>u<=rem).map(u=>(
-              <button key={u} onClick={()=>setUnits(u)} style={{width:36,height:32,borderRadius:7,border:"1.5px solid",borderColor:units===u?"#494E51":"#e0e0e0",background:units===u?"#494E51":"#fff",color:units===u?"#fff":"#555",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{u}</button>
+              <button key={u} onClick={()=>setUnits(u)} style={{width:36,height:32,borderRadius:7,border:"1.5px solid",borderColor:units===u?"#1F2A44":"#e0e0e0",background:units===u?"#1F2A44":"#fff",color:units===u?"#fff":"#555",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{u}</button>
             ))}
             {rem===0&&<span style={{fontSize:11,color:"#2d6a4f",padding:"7px 0"}}>✓ 已完成</span>}
           </div>
@@ -1328,8 +1328,8 @@ function MonthGroup({monthNum, allCourses, monthlyPaid, toggleMonthPaid, onEditC
   const confirm   = () => { toggleMonthPaid(mKey,paidInput,amtInput); setIsEditing(false); };
   const cancel    = () => setIsEditing(false);
   return (
-    <div style={{background:"#FCFAF9",borderRadius:10,marginBottom:8,overflow:"hidden",border:"1px solid #E6EDEF"}}>
-      <div style={{padding:"9px 12px",background:allPaid?"#FCFAF9":"#EDE5DC",display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+    <div style={{background:"#FDFAF5",borderRadius:10,marginBottom:8,overflow:"hidden",border:"1px solid #DDD5C4"}}>
+      <div style={{padding:"9px 12px",background:allPaid?"#FDFAF5":"#E8DABB",display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
         <span style={{fontSize:12,fontWeight:700,color:allPaid?"#aaa":"#4A3728",flex:1}}>2026年{monthNum}月</span>
         <span style={{fontSize:11,fontWeight:700,color:allPaid?"#bbb":"#4A3728"}}>
           {mCourses.length}堂{mTotal>0?` · $${mTotal.toLocaleString()}`:""}
@@ -1342,13 +1342,13 @@ function MonthGroup({monthNum, allCourses, monthlyPaid, toggleMonthPaid, onEditC
               <input value={amtInput} onChange={e=>setAmtInput(e.target.value)} placeholder="實際金額"
                 onKeyDown={e=>{if(e.key==="Enter")confirm();if(e.key==="Escape")cancel();}}
                 style={{width:88,padding:"3px 7px",borderRadius:6,border:"1px solid #aaa",fontSize:10,fontFamily:"inherit",outline:"none"}}/>
-              <button onClick={confirm} style={{padding:"3px 8px",borderRadius:6,border:"none",background:"#494E51",color:"#fff",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>確認</button>
-              <button onClick={cancel}  style={{padding:"3px 6px",borderRadius:6,border:"1px solid #ddd",background:"#FCFAF9",color:"#888",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+              <button onClick={confirm} style={{padding:"3px 8px",borderRadius:6,border:"none",background:"#1F2A44",color:"#fff",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>確認</button>
+              <button onClick={cancel}  style={{padding:"3px 6px",borderRadius:6,border:"1px solid #ddd",background:"#FDFAF5",color:"#888",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
             </div>
           : <button onClick={()=>allPaid?toggleMonthPaid(mKey,"",""):(setIsEditing(true),setPaidInput(mp?.paidDate||""),setAmtInput(mp?.paidAmt||""))}
               style={{fontSize:10,padding:"3px 9px",borderRadius:99,cursor:"pointer",fontFamily:"inherit",
-                background:allPaid?"transparent":"#CEB9A6",color:allPaid?"#ccc":"#4A3728",fontWeight:600,
-                border:allPaid?"1px solid #E6EDEF":"none"}}>
+                background:allPaid?"transparent":"#C6A75E",color:allPaid?"#ccc":"#4A3728",fontWeight:600,
+                border:allPaid?"1px solid #DDD5C4":"none"}}>
               {allPaid?`合計 ${mp?.paidAmt?"$"+mp.paidAmt:"$"+mTotal.toLocaleString()}${mp?.paidDate?" "+mp.paidDate:""}`:"整月入帳"}
             </button>
         }
@@ -1380,7 +1380,7 @@ function CourseFeeRow({c,allPaid,onEditCourse,onSaveCourseFee,pill}) {
               onKeyDown={e=>{if(e.key==="Enter")save();if(e.key==="Escape")setEditing(false);}}
               autoFocus
               style={{width:70,padding:"2px 6px",borderRadius:5,border:"1px solid #aaa",fontSize:10,fontFamily:"inherit",outline:"none"}}/>
-            <button onClick={save} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#494E51",color:"#fff",fontSize:9,cursor:"pointer",fontFamily:"inherit"}}>存</button>
+            <button onClick={save} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#1F2A44",color:"#fff",fontSize:9,cursor:"pointer",fontFamily:"inherit"}}>存</button>
             <button onClick={()=>setEditing(false)} style={{background:"none",border:"none",cursor:"pointer",color:"#bbb",fontSize:10,padding:0,fontFamily:"inherit"}}>✕</button>
           </div>
         : <div style={{display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
@@ -1397,16 +1397,16 @@ function CourseFeeRow({c,allPaid,onEditCourse,onSaveCourseFee,pill}) {
 function TaskRow({r,onMarkPaid}) {
   const isPaid = r.feePaid;
   return (
-    <div style={{display:"flex",alignItems:"center",gap:6,padding:"6px 0",borderBottom:"0.5px solid #E6EDEF",opacity:isPaid?0.5:1}}>
+    <div style={{display:"flex",alignItems:"center",gap:6,padding:"6px 0",borderBottom:"0.5px solid #DDD5C4",opacity:isPaid?0.5:1}}>
       <span style={{fontSize:10,color:"#bbb",flexShrink:0,width:46}}>{r.date}</span>
-      <span style={{flex:1,fontSize:11,color:isPaid?"#bbb":"#494E51",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
+      <span style={{flex:1,fontSize:11,color:isPaid?"#bbb":"#1F2A44",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
       <div style={{textAlign:"right",flexShrink:0,minWidth:0}}>
-        <div style={{fontSize:11,fontWeight:600,color:isPaid?"#bbb":"#494E51"}}>{r.fee}</div>
+        <div style={{fontSize:11,fontWeight:600,color:isPaid?"#bbb":"#1F2A44"}}>{r.fee}</div>
         {(r.feeBank||r.feePaidDate)&&<div style={{fontSize:9,color:"#ccc"}}>{r.feePaidDate||r.feeBank}</div>}
       </div>
       {!isPaid&&<button onClick={()=>onMarkPaid(r)}
         style={{width:52,fontSize:9,padding:"2px 0",borderRadius:99,cursor:"pointer",fontFamily:"inherit",flexShrink:0,
-          background:"#CEB9A6",color:"#4A3728",fontWeight:600,border:"none"}}>
+          background:"#C6A75E",color:"#1F2A44",fontWeight:600,border:"none"}}>
         · 待入帳
       </button>}
     </div>
@@ -1430,8 +1430,8 @@ function TaskGroup({title,items,color,onMarkPaid,defaultOpen}) {
     return t;
   };
   return (
-    <div style={{background:"#FCFAF9",borderRadius:10,marginBottom:8,overflow:"hidden",border:"1px solid #E6EDEF"}}>
-      <div style={{padding:"9px 12px",background:isPaid?"#FCFAF9":"#EDE5DC",display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}
+    <div style={{background:"#FDFAF5",borderRadius:10,marginBottom:8,overflow:"hidden",border:"1px solid #DDD5C4"}}>
+      <div style={{padding:"9px 12px",background:isPaid?"#FDFAF5":"#E8DABB",display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}
         onClick={()=>setOpen(o=>!o)}>
         <span style={{fontSize:12,fontWeight:700,color:isPaid?"#aaa":"#4A3728",flex:1}}>{formatTitle(title)}</span>
         {!open&&<span style={{fontSize:10,color:"#aaa",flexShrink:0}}>{items.length} 本</span>}
@@ -1539,21 +1539,21 @@ function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse
         {[["all","全部"],["course","授課"],["task","翻譯"]].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)}
             style={{flex:1,padding:"7px",borderRadius:9,border:"1.5px solid",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",
-              borderColor:tab===k?"#494E51":"#e0e0e0",background:tab===k?"#494E51":"#fff",color:tab===k?"#fff":"#555"}}>{l}</button>
+              borderColor:tab===k?"#1F2A44":"#e0e0e0",background:tab===k?"#1F2A44":"#fff",color:tab===k?"#fff":"#555"}}>{l}</button>
         ))}
         <div style={{display:"flex",gap:4,flexShrink:0}}>
-          <button onClick={()=>triggerAll(true)}  style={{padding:"5px 8px",borderRadius:7,border:"1px solid #e0e0e0",background:"#FCFAF9",color:"#555",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>全開</button>
-          <button onClick={()=>triggerAll(false)} style={{padding:"5px 8px",borderRadius:7,border:"1px solid #e0e0e0",background:"#FCFAF9",color:"#555",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>全收</button>
+          <button onClick={()=>triggerAll(true)}  style={{padding:"5px 8px",borderRadius:7,border:"1px solid #e0e0e0",background:"#FDFAF5",color:"#555",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>全開</button>
+          <button onClick={()=>triggerAll(false)} style={{padding:"5px 8px",borderRadius:7,border:"1px solid #e0e0e0",background:"#FDFAF5",color:"#555",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>全收</button>
         </div>
       </div>
 
       {showCourse&&(
         <div style={{marginBottom:tab==="all"?16:0}}>
           {/* 授課小計 */}
-          <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #E6EDEF"}}>
+          <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #DDD5C4"}}>
             <div style={{fontSize:10,letterSpacing:"1px",color:"#8C8880",marginBottom:6}}>⊞ 授課講師費</div>
             <div style={{display:"flex",gap:5}}>
-              {[["合計",courseTotalAmt,"#494E51","#F0EDE8"],["已入帳",coursePaidAmt,"#4E5E5C","#DDE4E8"],["待入帳",courseTotalAmt-coursePaidAmt,"#7A6251","#EDE5DC"]].map(([l,v,c,bg])=>(
+              {[["合計",courseTotalAmt,"#1F2A44","#F2ECE0"],["已入帳",coursePaidAmt,"#4E5E5C","#D5DFF0"],["待入帳",courseTotalAmt-coursePaidAmt,"#7A6251","#E8DABB"]].map(([l,v,c,bg])=>(
                 <div key={l} style={{flex:1,background:bg,borderRadius:7,padding:"5px 8px",textAlign:"center"}}>
                   <div style={{fontSize:9,color:c,marginBottom:1}}>{l}</div>
                   <div style={{fontSize:13,fontWeight:700,color:c}}>${v.toLocaleString()}</div>
@@ -1573,10 +1573,10 @@ function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse
       {showTask&&(
         <div>
           {/* 翻譯小計 */}
-          <div style={{background:"#FCFAF9",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #E6EDEF"}}>
+          <div style={{background:"#FDFAF5",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #DDD5C4"}}>
             <div style={{fontSize:10,letterSpacing:"1px",color:"#8C8880",marginBottom:6}}>⟐ 翻譯稿費</div>
             <div style={{display:"flex",gap:5}}>
-              {[["合計",taskTotalAmt,"#494E51","#F0EDE8"],["已入帳",taskPaidAmt,"#4E5E5C","#DDE4E8"],["待入帳",taskTotalAmt-taskPaidAmt,"#7A6251","#EDE5DC"]].map(([l,v,c,bg])=>(
+              {[["合計",taskTotalAmt,"#1F2A44","#F2ECE0"],["已入帳",taskPaidAmt,"#4E5E5C","#D5DFF0"],["待入帳",taskTotalAmt-taskPaidAmt,"#7A6251","#E8DABB"]].map(([l,v,c,bg])=>(
                 <div key={l} style={{flex:1,background:bg,borderRadius:7,padding:"5px 8px",textAlign:"center"}}>
                   <div style={{fontSize:9,color:c,marginBottom:1}}>{l}</div>
                   <div style={{fontSize:13,fontWeight:700,color:c}}>${v.toLocaleString()}</div>
@@ -1617,17 +1617,17 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
     const diff=Math.ceil((new Date(2026,m-1,day)-TODAY)/864e5);
     if (diff<0)  return {label:`逾期${Math.abs(diff)}天`,color:"#c0392b",bg:"#FCEBEB"};
     if (diff===0)return {label:"今天截稿",color:"#c0392b",bg:"#FCEBEB"};
-    if (diff<=7) return {label:`${diff}天後`,color:"#e67e22",bg:"#EDE5DC"};
-    return {label:`${diff}天後`,color:"#2d6a4f",bg:"#DDE4E8"};
+    if (diff<=7) return {label:`${diff}天後`,color:"#e67e22",bg:"#E8DABB"};
+    return {label:`${diff}天後`,color:"#2d6a4f",bg:"#D5DFF0"};
   };
 
   return (
     <div>
-      <div style={{display:"flex",gap:5,marginBottom:10,background:"#FCFAF9",borderRadius:10,padding:"6px"}}>
+      <div style={{display:"flex",gap:5,marginBottom:10,background:"#FDFAF5",borderRadius:10,padding:"6px"}}>
         {[["active","⟐ 進行中"],["archive","◎ 作品集"]].map(([k,l])=>(
           <button key={k} onClick={()=>setTransTab(k)} style={{flex:1,padding:"6px",borderRadius:8,border:"none",cursor:"pointer",
             fontSize:12,fontWeight:600,fontFamily:"inherit",
-            background:transTab===k?"#494E51":"transparent",color:transTab===k?"#ABBCC4":"#888"}}>{l}</button>
+            background:transTab===k?"#1F2A44":"transparent",color:transTab===k?"#8A9BB5":"#888"}}>{l}</button>
         ))}
       </div>
 
@@ -1654,18 +1654,18 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
             return keys.map(month=>(
               <div key={month} style={{marginBottom:12}}>
                 {/* 月份標題 */}
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#f0f2f5",borderRadius:8}}>
-                  <span style={{fontSize:12,fontWeight:700,color:"#494E51"}}>{month}</span>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#EDE5D4",borderRadius:8}}>
+                  <span style={{fontSize:11,fontWeight:500,color:"#1F2A44"}}>{month}</span>
                   <span style={{fontSize:10,color:"#888"}}>{groups[month].length} 件</span>
                 </div>
                 {groups[month].map(t=>{
                   const dl=daysLabel(t.deadline);
                   return (
-                    <div key={t.id} style={{background:"#FCFAF9",borderRadius:10,padding:"12px",marginBottom:6,borderLeft:"3px solid #085041"}}>
+                    <div key={t.id} style={{background:"#FDFAF5",borderRadius:10,padding:"12px",marginBottom:6,borderLeft:"3px solid #C6A75E"}}>
                       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:6,marginBottom:4}}>
                         <div style={{flex:1,minWidth:0}}>
-                          {t.publisher&&<div style={{fontSize:10,color:"#4A5E55",fontWeight:600,marginBottom:2}}>【{t.publisher}】</div>}
-                          <div style={{fontSize:13,fontWeight:700,color:"#1a1a1a"}}>{t.title}</div>
+                          {t.publisher&&<div style={{fontSize:10,color:"#8A9BB5",fontWeight:400,marginBottom:2}}>【{t.publisher}】</div>}
+                          <div style={{fontSize:12,fontWeight:500,color:"#1F2A44"}}>{t.title}</div>
                         </div>
                         {dl&&<span style={{fontSize:10,padding:"2px 8px",borderRadius:99,background:dl.bg,color:dl.color,fontWeight:600,flexShrink:0}}>{dl.label}</span>}
                       </div>
@@ -1678,7 +1678,7 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
                       {t.note&&<div style={{fontSize:10,color:"#888",background:"#f8f8f8",borderRadius:5,padding:"3px 8px",marginBottom:4}}>{t.note}</div>}
                       <div style={{display:"flex",gap:5,justifyContent:"flex-end",marginTop:4}}>
                         <button onClick={()=>onEdit(t)} style={btnS("#555","#f0f0f0",{fontSize:10,padding:"3px 10px"})}>編輯</button>
-                        <button onClick={()=>onArchive(t.id)} style={btnS("#4A5E55","#DDE8E3",{fontSize:10,padding:"3px 10px"})}>完稿→作品集</button>
+                        <button onClick={()=>onArchive(t.id)} style={btnS("#1F2A44","#E8DABB",{fontSize:10,padding:"3px 10px",fontWeight:500})}>完稿 → 作品集</button>
                       </div>
                     </div>
                   );
@@ -1694,8 +1694,8 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
             <span style={{fontSize:11,color:"#888"}}>作品集 {archived.length} 件</span>
             <div style={{display:"flex",gap:3}}>
-              <button onClick={()=>setArchiveSort("asc")} style={{padding:"3px 7px",borderRadius:6,border:`1px solid ${archiveSort==="asc"?"#494E51":"#e0e0e0"}`,background:archiveSort==="asc"?"#494E51":"#fff",color:archiveSort==="asc"?"#ABBCC4":"#aaa",fontSize:13,cursor:"pointer",lineHeight:1}}>↑</button>
-              <button onClick={()=>setArchiveSort("desc")} style={{padding:"3px 7px",borderRadius:6,border:`1px solid ${archiveSort==="desc"?"#494E51":"#e0e0e0"}`,background:archiveSort==="desc"?"#494E51":"#fff",color:archiveSort==="desc"?"#ABBCC4":"#aaa",fontSize:13,cursor:"pointer",lineHeight:1}}>↓</button>
+              <button onClick={()=>setArchiveSort("asc")} style={{padding:"3px 7px",borderRadius:6,border:`1px solid ${archiveSort==="asc"?"#1F2A44":"#e0e0e0"}`,background:archiveSort==="asc"?"#1F2A44":"#fff",color:archiveSort==="asc"?"#8A9BB5":"#aaa",fontSize:13,cursor:"pointer",lineHeight:1}}>↑</button>
+              <button onClick={()=>setArchiveSort("desc")} style={{padding:"3px 7px",borderRadius:6,border:`1px solid ${archiveSort==="desc"?"#1F2A44":"#e0e0e0"}`,background:archiveSort==="desc"?"#1F2A44":"#fff",color:archiveSort==="desc"?"#8A9BB5":"#aaa",fontSize:13,cursor:"pointer",lineHeight:1}}>↓</button>
             </div>
           </div>
           {archived.length===0&&<div style={{textAlign:"center",padding:"40px",color:"#ccc",fontSize:12}}>尚無完成作品</div>}
@@ -1703,10 +1703,10 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
             const unpublished = archived.filter(t=>!t.pubDate);
             const published   = archived.filter(t=>t.pubDate);
             const ArchiveCard = ({t}) => (
-              <div key={t.id} style={{background:"#FCFAF9",borderRadius:10,padding:"11px 12px",marginBottom:6,borderLeft:"3px solid #aaa"}}>
+              <div key={t.id} style={{background:"#FDFAF5",borderRadius:10,padding:"11px 12px",marginBottom:6,borderLeft:"3px solid #aaa"}}>
                 <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
-                  {t.publisher&&<span style={{fontSize:10,color:"#4A5E55",fontWeight:600}}>【{t.publisher}】</span>}
-                  <span style={{fontSize:13,fontWeight:700,flex:1}}>{t.title}</span>
+                  {t.publisher&&<span style={{fontSize:10,color:"#8A9BB5",fontWeight:400}}>【{t.publisher}】</span>}
+                  <span style={{fontSize:12,fontWeight:500,flex:1,color:"#1F2A44"}}>{t.title}</span>
                   <div style={{display:"flex",gap:5,alignItems:"center",flexShrink:0}}>
                     <button onClick={()=>onEdit(t)} style={{background:"none",border:"none",cursor:"pointer",color:"#ccc",fontSize:11,padding:0,fontFamily:"inherit"}}>✎</button>
                     <button onClick={()=>onArchive(t.id,"unarchive")} style={btnS("#555","#f0f0f0",{fontSize:10,padding:"3px 10px"})}>↩ 移回進行中</button>
@@ -1724,7 +1724,7 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
               <>
                 {unpublished.length>0&&(
                   <div style={{marginBottom:14}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#EDE5DC",borderRadius:8}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#E8DABB",borderRadius:8}}>
                       <span style={{fontSize:11,fontWeight:700,color:"#7A6251"}}>◌ 尚未出版</span>
                       <span style={{fontSize:10,color:"#B09880"}}>{unpublished.length} 件</span>
                     </div>
@@ -1733,8 +1733,8 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
                 )}
                 {published.length>0&&(
                   <div>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#DDE8E3",borderRadius:8}}>
-                      <span style={{fontSize:11,fontWeight:700,color:"#4A5E55"}}>✦ 已出版</span>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#E8E2D2",borderRadius:8}}>
+                      <span style={{fontSize:11,fontWeight:700,color:"#2A4060"}}>✦ 已出版</span>
                       <span style={{fontSize:10,color:"#7A9E94"}}>{published.length} 件</span>
                     </div>
                     {published.map(t=><ArchiveCard key={t.id} t={t}/>)}
@@ -1772,7 +1772,7 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
   const GroupHeader = ({icon,label,color,line,count}) => (
     <div style={{display:"flex",alignItems:"center",gap:6,margin:"8px 0 4px"}}>
       <span style={{fontSize:10,fontWeight:700,letterSpacing:"1.5px",color}}>{icon} {label}</span>
-      <span style={{fontSize:10,color:"#ABBCC4"}}>{count}</span>
+      <span style={{fontSize:10,color:"#8A9BB5"}}>{count}</span>
       <div style={{flex:1,height:"1px",background:line}}/>
     </div>
   );
@@ -1782,7 +1782,7 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
       <div style={{display:"flex",alignItems:"center",gap:6}}>
         <span style={{...pill(tc,tb),flexShrink:0}}>{label}</span>
         <span style={{flex:1,fontSize:11,color:"#aaa",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(t.name||t.text||"").replace(/^教材：/,"")}</span>
-        <button onClick={onUndo} style={{fontSize:9,padding:"2px 6px",borderRadius:5,border:"1px solid #ddd",background:"#FCFAF9",color:"#888",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>復原</button>
+        <button onClick={onUndo} style={{fontSize:9,padding:"2px 6px",borderRadius:5,border:"1px solid #ddd",background:"#FDFAF5",color:"#888",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>復原</button>
         <button onClick={onDel} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:11,padding:0,lineHeight:1,flexShrink:0}}>✕</button>
       </div>
     </div>
@@ -1791,7 +1791,7 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
   return (
     <div style={{marginTop:8}}>
       <button onClick={()=>setOpen(o=>!o)}
-        style={{width:"100%",padding:"8px 12px",borderRadius:8,border:"1px solid #E6EDEF",background:"#f8f8f8",
+        style={{width:"100%",padding:"8px 12px",borderRadius:8,border:"1px solid #DDD5C4",background:"#f8f8f8",
           color:"#aaa",fontSize:11,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <span style={{color:"#8C8880",letterSpacing:".3px"}}>· 已完成（{total}）</span>
         <span>{open?"▲":"▼"}</span>
@@ -1800,35 +1800,35 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
         <div style={{marginTop:4,display:"flex",flexDirection:"column",gap:4}}>
           {doneTranslate.length>0&&(
             <>
-              <GroupHeader icon="⟐" label="翻譯" color="#4A5E55" line="#DDE8E3" count={doneTranslate.length}/>
+              <GroupHeader icon="⟐" label="翻譯" color="#2A4060" line="#E8E2D2" count={doneTranslate.length}/>
               {doneTranslate.map(t=>(
                 <TaskCard key={t.id} t={t} label="翻譯"
-                  tc={t.color||"#4A5E55"} tb={t.bg||"#DDE8E3"}
+                  tc={t.color||"#2A4060"} tb={t.bg||"#E8E2D2"}
                   onUndo={()=>undoTask(t.id)} onDel={()=>delTask(t.id)}/>
               ))}
             </>
           )}
           {doneTeach.length>0&&(
             <>
-              <GroupHeader icon="⊞" label="備課" color="#6B6558" line="#EAE6DE" count={doneTeach.length}/>
+              <GroupHeader icon="⊞" label="備課" color="#6B6558" line="#E8E0CC" count={doneTeach.length}/>
               {doneTeach.map(t=>(
                 <TaskCard key={t.id} t={t} label="教材"
-                  tc={t.color||"#6B6558"} tb={t.bg||"#EAE6DE"}
+                  tc={t.color||"#6B6558"} tb={t.bg||"#E8E0CC"}
                   onUndo={()=>undoTask(t.id)} onDel={()=>delTask(t.id)}/>
               ))}
             </>
           )}
           {doneOther.length>0&&(
             <>
-              <GroupHeader icon="◎" label="其他" color="#5C6B73" line="#DDE4E8" count={doneOther.length}/>
+              <GroupHeader icon="◎" label="其他" color="#4A6080" line="#D5DFF0" count={doneOther.length}/>
               {doneTasks.filter(t=>t.type!=="translate"&&t.type!=="teach"&&t.type!=="material").map(t=>(
                 <TaskCard key={t.id} t={t} label="其他"
-                  tc={t.color||"#5C6B73"} tb={t.bg||"#DDE4E8"}
+                  tc={t.color||"#4A6080"} tb={t.bg||"#D5DFF0"}
                   onUndo={()=>undoTask(t.id)} onDel={()=>delTask(t.id)}/>
               ))}
               {doneFree.map(f=>(
                 <TaskCard key={f.id} t={f} label="待辦"
-                  tc="#5C6B73" tb="#DDE4E8"
+                  tc="#4A6080" tb="#D5DFF0"
                   onUndo={()=>undoFree(f.id)} onDel={()=>delFree(f.id)}/>
               ))}
             </>
@@ -1843,22 +1843,22 @@ function MiniGanttRow({task:t,onInc,onDec,onDel,onAddTodo,onToggleTodo,onDelTodo
   const [open,setOpen] = useState(false);
   const [input,setInput] = useState("");
   const d=t.deadline?daysUntil(t.deadline):null;
-  const uc=d===null?"#5C6B73":d<=3?"#c0392b":d<=7?"#e67e22":"#4E5E5C";
+  const uc=d===null?"#4A6080":d<=3?"#c0392b":d<=7?"#e67e22":"#4E5E5C";
   const typeLabel=t.type==="translate"?"翻譯":t.type==="material"||t.type==="teach"?"備課":t.type==="other"?"其他":"待辦";
-  const tc=t.color||(t.type==="translate"?"#4A5E55":t.type==="teach"||t.type==="material"?"#6B6558":"#5C6B73");
-  const tb=t.bg||(t.type==="translate"?"#DDE8E3":t.type==="teach"||t.type==="material"?"#EAE6DE":"#DDE4E8");
+  const tc=t.color||(t.type==="translate"?"#2A4060":t.type==="teach"||t.type==="material"?"#6B6558":"#4A6080");
+  const tb=t.bg||(t.type==="translate"?"#E8E2D2":t.type==="teach"||t.type==="material"?"#E8E0CC":"#D5DFF0");
   const todos=t.todos||[];
   const pendCount=todos.filter(x=>!x.done).length;
   const cbtn=(label,onClick,disabled)=>(
-    <button onClick={onClick} disabled={disabled} style={{width:26,height:26,borderRadius:6,border:`1.5px solid ${disabled?"#e8e8e8":tc}`,background:disabled?"#f8f8f8":"#FCFAF9",color:disabled?"#ccc":tc,fontSize:14,fontWeight:700,cursor:disabled?"default":"pointer",fontFamily:"inherit",lineHeight:1,padding:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{label}</button>
+    <button onClick={onClick} disabled={disabled} style={{width:26,height:26,borderRadius:6,border:`1.5px solid ${disabled?"#e8e8e8":tc}`,background:disabled?"#f8f8f8":"#FDFAF5",color:disabled?"#ccc":tc,fontSize:14,fontWeight:700,cursor:disabled?"default":"pointer",fontFamily:"inherit",lineHeight:1,padding:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{label}</button>
   );
   return (
-    <div style={{background:"#FCFAF9",borderRadius:8,padding:"9px 10px",marginBottom:5,borderLeft:`3px solid ${tc}`}}>
+    <div style={{background:"#FDFAF5",borderRadius:8,padding:"9px 10px",marginBottom:5,borderLeft:`3px solid ${tc}`}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:(t.type==="teach"||t.type==="material")&&t.content?3:5}}>
         <span style={{...pill(tc,tb),flexShrink:0}}>{typeLabel}</span>
         <span style={{fontSize:11,fontWeight:700,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(t.type==="teach"||t.type==="material")?t.name.replace(/^教材：/,""):t.name}</span>
         <button onClick={()=>setOpen(o=>!o)}
-          style={{fontSize:10,padding:"2px 7px",borderRadius:5,border:"1px solid #E6EDEF",background:open?"#E0E5E4":"#FCFAF9",color:open?"#4E5E5C":"#aaa",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>
+          style={{fontSize:10,padding:"2px 7px",borderRadius:5,border:"1px solid #DDD5C4",background:open?"#D4DCED":"#FDFAF5",color:open?"#4E5E5C":"#aaa",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>
           📋{todos.length>0?` ${pendCount}/${todos.length}`:""} {open?"▲":"▼"}
         </button>
       </div>
@@ -1873,7 +1873,7 @@ function MiniGanttRow({task:t,onInc,onDec,onDel,onAddTodo,onToggleTodo,onDelTodo
       )}
       <div style={{display:"flex",gap:1,marginBottom:4}}>
         {Array.from({length:10},(_,i)=>(
-          <div key={i} style={{flex:1,height:10,borderRadius:2,background:i<t.done?tc:"#E6EDEF",transition:"background .15s"}}/>
+          <div key={i} style={{flex:1,height:10,borderRadius:2,background:i<t.done?tc:"#DDD5C4",transition:"background .15s"}}/>
         ))}
       </div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -1899,7 +1899,7 @@ function MiniGanttRow({task:t,onInc,onDec,onDel,onAddTodo,onToggleTodo,onDelTodo
             <input value={input} onChange={e=>setInput(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&input.trim()&&(onAddTodo(t.id,input.trim()),setInput(""))}
               placeholder="新增子任務…"
-              style={{flex:1,padding:"5px 8px",borderRadius:6,border:"1.5px solid #E6EDEF",fontSize:11,fontFamily:"inherit",outline:"none"}}/>
+              style={{flex:1,padding:"5px 8px",borderRadius:6,border:"1.5px solid #DDD5C4",fontSize:11,fontFamily:"inherit",outline:"none"}}/>
             <button onClick={()=>input.trim()&&(onAddTodo(t.id,input.trim()),setInput(""))}
               style={{...btnS(),padding:"5px 10px",fontSize:11}}>+</button>
           </div>
@@ -1912,12 +1912,12 @@ function MiniGanttRow({task:t,onInc,onDec,onDel,onAddTodo,onToggleTodo,onDelTodo
 function CourseMiniCard({c,expanded,onClick,onEdit}) {
   const cc=CAT_COLOR[c.category]||"#333",cb=CAT_BG[c.category]||"#eee";
   return (
-    <div style={{background:"#FCFAF9",borderRadius:9,padding:"8px 11px",marginBottom:4,borderLeft:`3px solid ${cc}`,outline:expanded?`1.5px solid ${cc}`:"none"}}>
+    <div style={{background:"#FDFAF5",borderRadius:9,padding:"8px 11px",marginBottom:4,borderLeft:`3px solid ${cc}`,outline:expanded?`1.5px solid ${cc}`:"none"}}>
       <div style={{display:"flex",alignItems:"center",gap:5,cursor:"pointer"}} onClick={onClick}>
         <span style={{fontSize:12,fontWeight:700}}>{c.date}</span>
         <span style={{fontSize:10,color:"#888"}}>（{toWeek(c.date)}）{c.time}</span>
         <span style={pill(cc,cb)}>{CAT_LABEL[c.category]}</span>
-        {c.fee&&<span style={{...pill(c.feePaid?"#494E51":"#7A6251", c.feePaid?"#DDE4E8":"#EDE5DC"),marginLeft:"auto"}}>
+        {c.fee&&<span style={{...pill(c.feePaid?"#1F2A44":"#7A6251", c.feePaid?"#D5DFF0":"#E8DABB"),marginLeft:"auto"}}>
           {c.feePaid?"✓ 已入帳":"· 待入帳"}
         </span>}
         {onEdit&&<button onClick={e=>{e.stopPropagation();onEdit();}} style={{background:"none",border:"none",cursor:"pointer",color:"#bbb",fontSize:11,padding:"0 2px",marginLeft:c.fee?0:"auto",fontFamily:"inherit"}}>✎</button>}
@@ -1933,23 +1933,23 @@ function TransPanel({t,onClose,onEdit}) {
   const publisher = nameMatch ? nameMatch[1] : "";
   const title     = nameMatch ? nameMatch[2] : t.name;
   return (
-    <div style={{background:"#EDE5DC",border:"1.5px solid #CEB9A6",borderRadius:9,padding:"10px",marginBottom:6,marginTop:-3}}>
+    <div style={{background:"#E8DABB",border:"1.5px solid #C6A75E",borderRadius:9,padding:"10px",marginBottom:6,marginTop:-3}}>
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#494E51",marginBottom:2}}>{title}</div>
+          <div style={{fontSize:12,fontWeight:700,color:"#1F2A44",marginBottom:2}}>{title}</div>
           {publisher&&<div style={{fontSize:10,color:"#7A6251",letterSpacing:".5px",marginBottom:4}}>{publisher}</div>}
           {t.deadline&&<div style={{fontSize:10,color:"#8C8880"}}>◎ 截稿日：{t.deadline}</div>}
           {t.fee&&(
-            <div style={{marginTop:6,padding:"8px 10px",background:"#F3EFEB",borderRadius:7,border:"1px solid #CEB9A6"}}>
+            <div style={{marginTop:6,padding:"8px 10px",background:"#EDE5D4",borderRadius:7,border:"1px solid #C6A75E"}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
                 <span style={{fontSize:11,fontWeight:600,color:"#6B6558"}}>◈ 稿費</span>
                 <span style={{fontSize:10,padding:"2px 8px",borderRadius:99,fontWeight:600,
-                  background:t.feePaid?"#DDE4E8":"#EDE5DC",
-                  color:t.feePaid?"#494E51":"#7A6251"}}>
+                  background:t.feePaid?"#D5DFF0":"#E8DABB",
+                  color:t.feePaid?"#1F2A44":"#7A6251"}}>
                   {t.feePaid?"✓ 已入帳":"· 待入帳"}
                 </span>
               </div>
-              <div style={{fontSize:11,color:"#494E51"}}>金額：<strong>{t.fee}</strong></div>
+              <div style={{fontSize:11,color:"#1F2A44"}}>金額：<strong>{t.fee}</strong></div>
               {t.feeBank&&<div style={{fontSize:10,color:"#8C8880",marginTop:2}}>匯入：{t.feeBank}</div>}
               {t.feeDate&&<div style={{fontSize:10,color:"#8C8880",marginTop:1}}>預計入帳：{t.feeDate}</div>}
             </div>
@@ -1957,8 +1957,8 @@ function TransPanel({t,onClose,onEdit}) {
           {!t.deadline&&!t.fee&&<div style={{fontSize:10,color:"#C4BDB5"}}>無額外資訊</div>}
         </div>
         <div style={{display:"flex",gap:4,alignSelf:"flex-start",flexShrink:0,marginLeft:8}}>
-          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #CEB9A6",background:"#F3EFEB",color:"#6B6558",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>編輯</button>}
-          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #CEB9A6",background:"#F3EFEB",color:"#ABBCC4",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #C6A75E",background:"#EDE5D4",color:"#6B6558",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>編輯</button>}
+          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #C6A75E",background:"#EDE5D4",color:"#8A9BB5",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
       </div>
     </div>
@@ -1966,15 +1966,15 @@ function TransPanel({t,onClose,onEdit}) {
 }
 
 function CoursePanel({c,onClose,onEdit,onMarkPaid}) {
-  const cc="#494E51";
-  const cb="#DDE4E8";
+  const cc="#1F2A44";
+  const cb="#D5DFF0";
   return (
     <div style={{background:cb,border:`1.5px solid ${cc}44`,borderRadius:9,padding:"10px",marginBottom:6,marginTop:-3}}>
       {/* 標題列：日期＋編輯＋關閉 */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:6}}>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2}}>
-            <span style={{fontSize:13,fontWeight:700,color:"#494E51"}}>{c.date}</span>
+            <span style={{fontSize:13,fontWeight:700,color:"#1F2A44"}}>{c.date}</span>
             <span style={{fontSize:11,color:"#8C8880"}}>（{toWeek(c.date)}）{c.time}</span>
             <span style={{...pill(cc,cb),border:`1px solid ${cc}55`}}>{CAT_LABEL[c.category]}</span>
           </div>
@@ -1984,25 +1984,25 @@ function CoursePanel({c,onClose,onEdit,onMarkPaid}) {
           {c.slideUrl&&<a href={c.slideUrl} target="_blank" rel="noreferrer" style={{fontSize:11,color:cc,display:"block",marginBottom:3}}>⟐ 簡報連結</a>}
           {c.note&&<div style={{fontSize:11,color:"#8C8880",marginBottom:3}}>· {c.note}</div>}
           {c.fee&&(
-            <div style={{marginTop:6,padding:"8px 10px",background:"#F3EFEB",borderRadius:7,border:`1px solid ${cc}33`}}>
+            <div style={{marginTop:6,padding:"8px 10px",background:"#EDE5D4",borderRadius:7,border:`1px solid ${cc}33`}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
                 <span style={{fontSize:11,fontWeight:600,color:"#6B6558"}}>◈ 講師費</span>
                 <button onClick={onMarkPaid} style={{fontSize:10,padding:"2px 8px",borderRadius:99,border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600,
-                  background:c.feePaid?"#DDE4E8":"#EDE5DC",
-                  color:c.feePaid?"#494E51":"#7A6251"}}>
+                  background:c.feePaid?"#D5DFF0":"#E8DABB",
+                  color:c.feePaid?"#1F2A44":"#7A6251"}}>
                   {c.feePaid?"✓ 已入帳":"· 標記入帳"}
                 </button>
               </div>
-              <div style={{fontSize:11,color:"#494E51"}}>金額：<strong>{c.fee}</strong></div>
+              <div style={{fontSize:11,color:"#1F2A44"}}>金額：<strong>{c.fee}</strong></div>
               {c.feeBank&&<div style={{fontSize:10,color:"#8C8880",marginTop:2}}>匯入：{c.feeBank}</div>}
               {c.feeDate&&<div style={{fontSize:10,color:"#8C8880",marginTop:1}}>預計入帳：{c.feeDate}</div>}
-              {c.feePaidDate&&<div style={{fontSize:10,color:"#5C6B73",marginTop:1,fontWeight:600}}>✓ 實際入帳：{c.feePaidDate}</div>}
+              {c.feePaidDate&&<div style={{fontSize:10,color:"#4A6080",marginTop:1,fontWeight:600}}>✓ 實際入帳：{c.feePaidDate}</div>}
             </div>
           )}
         </div>
         <div style={{display:"flex",gap:4,alignSelf:"flex-start",flexShrink:0,marginLeft:8}}>
-          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#F3EFEB",color:"#6B6558",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✎</button>}
-          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#F3EFEB",color:"#ABBCC4",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#EDE5D4",color:"#6B6558",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✎</button>}
+          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#EDE5D4",color:"#8A9BB5",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
       </div>
     </div>
@@ -2011,7 +2011,7 @@ function CoursePanel({c,onClose,onEdit,onMarkPaid}) {
 
 function Chk({done,onToggle}) {
   return (
-    <div onClick={onToggle} style={{width:15,height:15,borderRadius:3,border:done?"none":"1.5px solid #ccc",background:done?"#2d6a4f":"#fff",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div onClick={onToggle} style={{width:15,height:15,borderRadius:3,border:done?"none":"1.5px solid #ccc",background:done?"#1F2A44":"#fff",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
       {done&&<span style={{color:"#fff",fontSize:9}}>✓</span>}
     </div>
   );
