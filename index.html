@@ -336,25 +336,15 @@ function App() {
     load();
   },[]);
 
-  const persist = useCallback((c,t,f,ce,nid,mp)=>{
+  const persist = useCallback((c,t,f,ce,nid,mp,tr)=>{
     setSyncing(true);
-    const data = {courses:c, tasks:t, freeTasks:f, calEvents:ce, nextId:nid, monthlyPaid:mp||{}, translates};
-    // 同時寫 Firebase 和 localStorage（雙保險）
+    const data = {courses:c, tasks:t, freeTasks:f, calEvents:ce, nextId:nid, monthlyPaid:mp||{}, translates:tr!==undefined?tr:translates};
     if (window.fbSave) window.fbSave(data);
     try { localStorage.setItem("slashV5", JSON.stringify(data)); } catch(e){}
     setTimeout(()=>setSyncing(false),400);
   },[translates]);
 
-  // translates 變動時也寫入
-  useEffect(()=>{
-    try {
-      const raw = localStorage.getItem("slashV5");
-      const p = raw ? JSON.parse(raw) : {};
-      const data = {...p, translates};
-      localStorage.setItem("slashV5", JSON.stringify(data));
-      if (window.fbSave) window.fbSave(data);
-    } catch(e){}
-  },[translates]);
+  // translates 變動時也寫入（移除，改由 persist 統一處理，避免覆蓋 monthlyPaid）
   const toast2 = (msg,type="ok")=>{setToast({msg,type});setTimeout(()=>setToast(null),2000);};
 
   // ── Course CRUD ──
@@ -468,9 +458,7 @@ function App() {
       setTranslates(newTranslates);
       setTasks(tupd);
       setNextId(nid+1);
-      const addData={courses,tasks:tupd,freeTasks,calEvents,nextId:nid+1,monthlyPaid,translates:newTranslates};
-      if(window.fbSave)window.fbSave(addData);
-      try{localStorage.setItem("slashV5",JSON.stringify(addData));}catch(e){}
+      persist(courses,tupd,freeTasks,calEvents,nid+1,monthlyPaid,newTranslates);
     } else {
       // task_ 前綴：來自 INIT_TASKS（不在 translates 裡），只更新 tasks
       if(transModal.id?.startsWith("task_")){
@@ -493,9 +481,7 @@ function App() {
           fee:transForm.fee||"",feeBank:transForm.feeBank||"",feeDate:transForm.feeDate||"",
         });
         setTasks(tupd);
-        const saveData = {courses, tasks:tupd, freeTasks, calEvents, nextId, monthlyPaid, translates:upd};
-        if (window.fbSave) window.fbSave(saveData);
-        try { localStorage.setItem("slashV5", JSON.stringify(saveData)); } catch(e){}
+        persist(courses,tupd,freeTasks,calEvents,nextId,monthlyPaid,upd);
       }
     }
     setTransModal(null); toast2("已儲存 ✓");
@@ -504,9 +490,7 @@ function App() {
     const unarchive = mode==="unarchive";
     const upd=translates.map(t=>t.id!==id?t:{...t,archived:!unarchive});
     setTranslates(upd);
-    const data = {courses, tasks, freeTasks, calEvents, nextId, monthlyPaid, translates:upd};
-    if (window.fbSave) window.fbSave(data);
-    try { localStorage.setItem("slashV5", JSON.stringify(data)); } catch(e){}
+    persist(courses,tasks,freeTasks,calEvents,nextId,monthlyPaid,upd);
     toast2(unarchive?"已移回進行中":"已移至作品集");
     if(unarchive) setTransTab("active");
   };
