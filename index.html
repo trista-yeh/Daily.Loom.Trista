@@ -56,8 +56,8 @@ const CAT_COLOR = { gov:"#1F2A44", local:"#8B5E3C", other:"#4A6080" };
 const CAT_BG    = { gov:"#DDD5C4", local:"#EDD9C4", other:"#D5DFF0" };
 const CAT_LABEL = { gov:"市政府",  local:"地區類",  other:"其他類"  };
 const DAYS_ZH   = ["日","一","二","三","四","五","六"];
-const TODAY     = new Date(2026,4,27);
-const TODAY_STR = "5/27";
+const TODAY     = new Date();
+const TODAY_STR = `${TODAY.getMonth()+1}/${TODAY.getDate()}`;
 const ROUTINE   = {
   sport:    { label:"運動", color:"#4A6080", bg:"#D5DFF0" },
   koto:     { label:"古箏", color:"#7A6251", bg:"#E8DABB" },
@@ -70,20 +70,20 @@ const TIME_SLOTS = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:
 // ── helpers ───────────────────────────────────────────────
 const daysUntil = md => {
   const [m,d] = md.split("/").map(Number);
-  return Math.ceil((new Date(2026,m-1,d) - TODAY) / 864e5);
+  return Math.ceil((new Date(TODAY.getFullYear(),m-1,d) - TODAY) / 864e5);
 };
 const toWeek = md => {
   if (!md) return "";
   const [m,d] = md.split("/").map(Number);
-  return DAYS_ZH[new Date(2026,m-1,d).getDay()];
+  return DAYS_ZH[new Date(TODAY.getFullYear(),m-1,d).getDay()];
 };
 const getWeekDates = (off=0) => {
-  const b = new Date(2026,4,25); b.setDate(b.getDate()+off*7);
+  const b = new Date(TODAY); b.setDate(b.getDate()+off*7);
   const dow = b.getDay(); b.setDate(b.getDate()-(dow===0?6:dow-1));
   return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return `${d.getMonth()+1}/${d.getDate()}`;});
 };
 const routineBlocks = (dt, teaches) => {
-  const [m,d] = dt.split("/").map(Number), dow = new Date(2026,m-1,d).getDay();
+  const [m,d] = dt.split("/").map(Number), dow = new Date(TODAY.getFullYear(),m-1,d).getDay();
   if (dow<1||dow>5) return [];
   const morn = teaches.some(t=>t.time<"12:"), aft = teaches.some(t=>t.time>="12:");
   const b = [];
@@ -687,7 +687,19 @@ function App() {
                 <DoneTaskList tasks={tasks} freeTasks={freeTasks} delTask={delTask} delFree={delFree}
                   setTasks={setTasks} setFreeTasks={setFreeTasks} courses={courses} calEvents={calEvents} nextId={nextId} persist={persist}
                   toggleTaskFeePaid={toggleTaskFeePaid}
-                  onMarkPaid={t=>{setPaidDateInput(t.feePaidDate||"");setPaidModal({type:"task",id:t.id,name:t.name,currentPaid:t.feePaid});}}/>
+                  onMarkPaid={t=>{setPaidDateInput(t.feePaidDate||"");setPaidModal({type:"task",id:t.id,name:t.name,currentPaid:t.feePaid});}}
+                  onEditTrans={t=>{
+                    const nameMatch=t.name.match(/^\[(.*?)\]\s*(.*)/);
+                    const titleStr=nameMatch?nameMatch[2]:t.name;
+                    const tr=translates.find(r=>r.title&&r.title===titleStr);
+                    if(tr){
+                      setTransForm({publisher:tr.publisher||"",title:tr.title,deadline:tr.deadline||"",note:tr.note||"",fee:tr.fee||"",feeBank:tr.feeBank||"",feeDate:tr.feeDate||"",pubDate:tr.pubDate||"",pubNote:tr.pubNote||""});
+                      setTransModal({mode:"edit",id:tr.id});
+                    } else {
+                      setTransForm({publisher:nameMatch?nameMatch[1]:"",title:titleStr,deadline:t.deadline||"",note:"",fee:t.fee||"",feeBank:t.feeBank||"",feeDate:t.feeDate||"",pubDate:"",pubNote:""});
+                      setTransModal({mode:"edit",id:`task_${t.id}`});
+                    }
+                  }}/>
               </div>
             )}
 
@@ -789,6 +801,18 @@ function App() {
             onEditCourse={openEditCourse}
             monthlyPaid={monthlyPaid} toggleMonthPaid={toggleMonthPaid}
             onSaveCourseFee={saveCourseFee}
+            onEditTrans={t=>{
+              const nameMatch=t.name.match(/^\[(.*?)\]\s*(.*)/);
+              const titleStr=nameMatch?nameMatch[2]:t.name;
+              const tr=translates.find(r=>r.title&&r.title===titleStr);
+              if(tr){
+                setTransForm({publisher:tr.publisher||"",title:tr.title,deadline:tr.deadline||"",note:tr.note||"",fee:tr.fee||"",feeBank:tr.feeBank||"",feeDate:tr.feeDate||"",pubDate:tr.pubDate||"",pubNote:tr.pubNote||""});
+                setTransModal({mode:"edit",id:tr.id});
+              } else {
+                setTransForm({publisher:nameMatch?nameMatch[1]:"",title:titleStr,deadline:t.deadline||"",note:"",fee:t.fee||"",feeBank:t.feeBank||"",feeDate:t.feeDate||"",pubDate:"",pubNote:""});
+                setTransModal({mode:"edit",id:`task_${t.rawId}`});
+              }
+            }}
           />
         )}
 
@@ -1054,9 +1078,9 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,personalEvents,onA
               if (!s) return null;
               const parts = s.replace(/[（(].*/, "").trim().split("/").map(n=>+n);
               if (parts.length>=3 && parts[0]>12) return parts[0]; // YYYY/M/D
-              return 2026; // 無年份資料，假設今年
+              return TODAY.getFullYear(); // 無年份資料，假設今年
             };
-            const CUR_YEAR = 2026;
+            const CUR_YEAR = TODAY.getFullYear();
             const transDeadlines = tasks.filter(t=>t.type==="translate"&&normDate(t.deadline)===dt&&normYear(t.deadline)===CUR_YEAR);
             const transPaid      = tasks.filter(t=>t.type==="translate"&&t.feePaid&&normDate(t.feeDate)===dt&&normYear(t.feeDate)===CUR_YEAR);
 
@@ -1178,7 +1202,7 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,personalEvents,onA
           <div onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:320}}>
             <div style={{fontSize:13,fontWeight:700,marginBottom:12,color:"#1F2A44"}}>
               {pModal.edit?"編輯個人行程":"＋ 新增個人行程"}
-              {pModal.date&&!pModal.edit&&<span style={{fontSize:11,fontWeight:400,color:"#888",marginLeft:6}}>{pModal.date}（{DAYS_ZH[new Date(2026,...pModal.date.split("/").map((v,i)=>i===0?+v-1:+v)).getDay()]}）</span>}
+              {pModal.date&&!pModal.edit&&<span style={{fontSize:11,fontWeight:400,color:"#888",marginLeft:6}}>{pModal.date}（{DAYS_ZH[new Date(TODAY.getFullYear(),...pModal.date.split("/").map((v,i)=>i===0?+v-1:+v)).getDay()]}）</span>}
             </div>
             <div style={{marginBottom:8}}>
               <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:3}}>名稱 <span style={{color:"#e74c3c"}}>*</span></div>
@@ -1247,8 +1271,8 @@ function calcHrs(timeStr) {
 
 function MonthView({courses,allMonths,selMonth,setSelMonth,expCourse,setExpCourse,todoInput,setTodoInput,addTodo,toggleTodo,delTodo,onEdit,onAdd}) {
   const mc=sortByDate(courses.filter(c=>c.date.startsWith(selMonth+"/")));
-  const dim=new Date(2026,+selMonth,0).getDate();
-  const fdow=new Date(2026,+selMonth-1,1).getDay();
+  const dim=new Date(TODAY.getFullYear(),+selMonth,0).getDate();
+  const fdow=new Date(TODAY.getFullYear(),+selMonth-1,1).getDay();
   const off=fdow===0?6:fdow-1;
   const cells=Array.from({length:off+dim},(_,i)=>i<off?null:i-off+1);
   while(cells.length%7!==0) cells.push(null);
@@ -1517,7 +1541,7 @@ function CourseFeeRow({c,allPaid,onEditCourse,onSaveCourseFee,pill}) {
 }
 
 // ── Finance View ──────────────────────────────────────────
-function TaskRow({r,onMarkPaid}) {
+function TaskRow({r,onMarkPaid,onEdit}) {
   const isPaid = r.feePaid;
   return (
     <div style={{display:"flex",alignItems:"center",gap:6,padding:"6px 0",borderBottom:"0.5px solid #DDD5C4",opacity:isPaid?0.5:1}}>
@@ -1527,6 +1551,11 @@ function TaskRow({r,onMarkPaid}) {
         <div style={{fontSize:11,fontWeight:600,color:isPaid?"#bbb":"#1F2A44"}}>{r.fee}</div>
         {(r.feeBank||r.feePaidDate)&&<div style={{fontSize:9,color:"#ccc"}}>{r.feePaidDate||r.feeBank}</div>}
       </div>
+      {onEdit&&<button onClick={()=>onEdit(r)}
+        style={{fontSize:9,padding:"2px 6px",borderRadius:99,cursor:"pointer",fontFamily:"inherit",flexShrink:0,
+          background:"#f0f0f0",color:"#888",fontWeight:600,border:"none"}}>
+        編輯
+      </button>}
       {!isPaid&&<button onClick={()=>onMarkPaid(r)}
         style={{width:52,fontSize:9,padding:"2px 0",borderRadius:99,cursor:"pointer",fontFamily:"inherit",flexShrink:0,
           background:"#C6A75E",color:"#1F2A44",fontWeight:600,border:"none"}}>
@@ -1536,7 +1565,7 @@ function TaskRow({r,onMarkPaid}) {
   );
 }
 
-function TaskGroup({title,items,color,onMarkPaid,defaultOpen}) {
+function TaskGroup({title,items,color,onMarkPaid,onEdit,defaultOpen}) {
   const [_open,setOpen] = useState(defaultOpen!==undefined&&defaultOpen!==null ? defaultOpen : true);
   const open = _open;
   const toNum = s => parseFloat((s||"").replace(/[^0-9.]/g,""))||0;
@@ -1561,12 +1590,12 @@ function TaskGroup({title,items,color,onMarkPaid,defaultOpen}) {
         <span style={{fontSize:11,fontWeight:700,color:isPaid?"#bbb":"#4A3728"}}>合計 ${sub.toLocaleString()}</span>
         <span style={{fontSize:11,color:"#bbb",flexShrink:0}}>{open?"▲":"▼"}</span>
       </div>
-      {open&&<div style={{padding:"0 10px"}}>{items.map(r=><TaskRow key={r.id} r={r} onMarkPaid={onMarkPaid}/>)}</div>}
+      {open&&<div style={{padding:"0 10px"}}>{items.map(r=><TaskRow key={r.id} r={r} onMarkPaid={onMarkPaid} onEdit={onEdit}/>)}</div>}
     </div>
   );
 }
 
-function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse,onMarkPaid,onEditCourse,monthlyPaid,toggleMonthPaid,onSaveCourseFee}) {
+function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse,onMarkPaid,onEditCourse,monthlyPaid,toggleMonthPaid,onSaveCourseFee,onEditTrans}) {
   const [tab,setTab] = useState("all");
   const toNum = s => parseFloat((s||"").replace(/[^0-9.]/g,""))||0;
   const sDate = items => [...items].sort((a,b)=>{
@@ -1614,9 +1643,12 @@ function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse
     if (!s) return "";
     const parts = s.replace(/[（(].*/, "").trim().split("/");
     if (parts.length >= 2 && parseInt(parts[0]) > 12) {
-      return `${parts[0]}/${parts[1]}`; // YYYY/M
+      return `${parts[0]}/${parts[1]}`; // YYYY/M 或 YYYY/M/D
     }
-    return ""; // 無年份，無法分組
+    if (parts.length >= 1 && parseInt(parts[0]) <= 12 && parseInt(parts[0]) > 0) {
+      return `${TODAY.getFullYear()}/${parts[0]}`; // M 或 M/D → 補上年份
+    }
+    return "";
   };
 
   taskItems.filter(r=>r.feePaid).forEach(r=>{
@@ -1638,7 +1670,7 @@ function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse
   });
 
   // 當月（2026年，用 TODAY 的月份）統計
-  const curYear = 2026, curMonth = TODAY.getMonth()+1;
+  const curYear = TODAY.getFullYear(), curMonth = TODAY.getMonth()+1;
   const curYM = `${curYear}/${curMonth}`;
   const curMonthPaid = (taskByMonth[curYM]||[]).reduce((s,r)=>s+toNum(r.fee),0)
     + (taskByMonth[curYM+"（待入帳）"]||[]).filter(r=>r.feePaid).reduce((s,r)=>s+toNum(r.fee),0);
@@ -1712,6 +1744,7 @@ function FinanceView({courses,tasks,toggleFeePaid,toggleTaskFeePaid,onGoToCourse
               items={taskByMonth[mk]}
               color={mk.includes("待")?"unpaid":"paid"}
               onMarkPaid={onMarkPaid}
+              onEdit={onEditTrans}
               defaultOpen={allOpen?.defaultOpen}/>
           ))}
           {taskItems.length===0&&<div style={{textAlign:"center",padding:"20px",color:"#ccc",fontSize:12}}>尚無翻譯費用記錄</div>}
@@ -1737,7 +1770,7 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
   const daysLabel = d => {
     if (!d) return "";
     const [m,day]=d.split("/").map(Number);
-    const diff=Math.ceil((new Date(2026,m-1,day)-TODAY)/864e5);
+    const diff=Math.ceil((new Date(TODAY.getFullYear(),m-1,day)-TODAY)/864e5);
     if (diff<0)  return {label:`逾期${Math.abs(diff)}天`,color:"#c0392b",bg:"#FCEBEB"};
     if (diff===0)return {label:"今天截稿",color:"#c0392b",bg:"#FCEBEB"};
     if (diff<=7) return {label:`${diff}天後`,color:"#e67e22",bg:"#E8DABB"};
@@ -1872,7 +1905,7 @@ function TransView({translates,transTab,setTransTab,onAdd,onEdit,onArchive,onDel
   );
 }
 
-function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,courses,calEvents,nextId,persist,toggleTaskFeePaid,onMarkPaid}) {
+function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,courses,calEvents,nextId,persist,toggleTaskFeePaid,onMarkPaid,onEditTrans}) {
   const [open,setOpen] = useState(false);
   const doneTasks = tasks.filter(t=>t.done>=10);
   const doneFree  = freeTasks.filter(f=>f.done||(f.progress||0)>=10);
@@ -1900,11 +1933,12 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
     </div>
   );
 
-  const TaskCard = ({t,onUndo,onDel,label,tc,tb}) => (
+  const TaskCard = ({t,onUndo,onDel,onEdit,label,tc,tb}) => (
     <div style={{background:"#f8f8f8",borderRadius:8,padding:"8px 10px"}}>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
         <span style={{...pill(tc,tb),flexShrink:0}}>{label}</span>
         <span style={{flex:1,fontSize:11,color:"#aaa",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{(t.name||t.text||"").replace(/^教材：/,"")}</span>
+        {onEdit&&<button onClick={onEdit} style={{fontSize:9,padding:"2px 6px",borderRadius:5,border:"1px solid #ddd",background:"#FDFAF5",color:"#888",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>編輯</button>}
         <button onClick={onUndo} style={{fontSize:9,padding:"2px 6px",borderRadius:5,border:"1px solid #ddd",background:"#FDFAF5",color:"#888",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>復原</button>
         <button onClick={onDel} style={{background:"none",border:"none",cursor:"pointer",color:"#ddd",fontSize:11,padding:0,lineHeight:1,flexShrink:0}}>✕</button>
       </div>
@@ -1927,6 +1961,7 @@ function DoneTaskList({tasks,freeTasks,delTask,delFree,setTasks,setFreeTasks,cou
               {doneTranslate.map(t=>(
                 <TaskCard key={t.id} t={t} label="翻譯"
                   tc={t.color||"#2A4060"} tb={t.bg||"#E8E2D2"}
+                  onEdit={onEditTrans?()=>onEditTrans(t):undefined}
                   onUndo={()=>undoTask(t.id)} onDel={()=>delTask(t.id)}/>
               ))}
             </>
