@@ -266,6 +266,8 @@ function App() {
   const [tasks,     setTasks]     = useState(()=>[...INIT_TASKS,...genTeachTasks(INIT_COURSES)]);
   const [freeTasks, setFreeTasks] = useState([]);
   const [calEvents, setCalEvents] = useState([]);
+  const [personalEvents, setPersonalEvents] = useState([]);
+  const [personalModal, setPersonalModal] = useState(null); // {date, hour} or {edit: event}
   const [view,      setView]      = useState("home");
   const [weekOff,   setWeekOff]   = useState(0);
   const [selMonth,  setSelMonth]  = useState("6");
@@ -330,19 +332,20 @@ function App() {
           if (p.monthlyPaid)        setMonthlyPaid(p.monthlyPaid);
           if (p.translates?.length) setTranslates(p.translates);
           if (p.calEvents?.length)  setCalEvents(p.calEvents);
+          if (p.personalEvents?.length) setPersonalEvents(p.personalEvents);
         }
       } catch(e){ console.error("load error", e); }
     };
     load();
   },[]);
 
-  const persist = useCallback((c,t,f,ce,nid,mp,tr)=>{
+  const persist = useCallback((c,t,f,ce,nid,mp,tr,pe)=>{
     setSyncing(true);
-    const data = {courses:c, tasks:t, freeTasks:f, calEvents:ce, nextId:nid, monthlyPaid:mp||{}, translates:tr!==undefined?tr:translates};
+    const data = {courses:c, tasks:t, freeTasks:f, calEvents:ce, nextId:nid, monthlyPaid:mp||{}, translates:tr!==undefined?tr:translates, personalEvents:pe!==undefined?pe:personalEvents};
     if (window.fbSave) window.fbSave(data);
     try { localStorage.setItem("slashV5", JSON.stringify(data)); } catch(e){}
     setTimeout(()=>setSyncing(false),400);
-  },[translates]);
+  },[translates, personalEvents]);
 
   // translates 變動時也寫入（移除，改由 persist 統一處理，避免覆蓋 monthlyPaid）
   const toast2 = (msg,type="ok")=>{setToast({msg,type});setTimeout(()=>setToast(null),2000);};
@@ -540,6 +543,21 @@ function App() {
     setTasks(upd);persist(courses,upd,freeTasks,calEvents,nextId,monthlyPaid);
   };
 
+  // ── Personal Events ──
+  const PERSONAL_COLORS = ["#7A6251","#4A6080","#6B6558","#8B5E7A","#5E7A6B","#7A7A5E"];
+  const addPersonalEvent = (ev) => {
+    const upd = [...personalEvents, {...ev, id: Date.now()}];
+    setPersonalEvents(upd); persist(courses,tasks,freeTasks,calEvents,nextId,monthlyPaid,undefined,upd); toast2("已新增 ✓");
+  };
+  const editPersonalEvent = (id, ev) => {
+    const upd = personalEvents.map(e => e.id!==id ? e : {...e,...ev});
+    setPersonalEvents(upd); persist(courses,tasks,freeTasks,calEvents,nextId,monthlyPaid,undefined,upd); toast2("已更新 ✓");
+  };
+  const delPersonalEvent = (id) => {
+    const upd = personalEvents.filter(e => e.id!==id);
+    setPersonalEvents(upd); persist(courses,tasks,freeTasks,calEvents,nextId,monthlyPaid,undefined,upd); toast2("已刪除","err");
+  };
+
   const weekDates    = getWeekDates(weekOff);
   const activeTasks  = tasks.filter(t=>t.done<10);
   const allMonths    = [...new Set(courses.map(c=>c.date.split("/")[0]))].sort((a,b)=>+a-+b);
@@ -731,6 +749,10 @@ function App() {
         {view==="week"&&(
           <WeekView weekDates={weekDates} weekOff={weekOff} setWeekOff={setWeekOff}
             courses={courses} tasks={tasks}
+            personalEvents={personalEvents}
+            onAddPersonal={addPersonalEvent}
+            onEditPersonal={editPersonalEvent}
+            onDelPersonal={delPersonalEvent}
             expCourse={expCourse} setExpCourse={setExpCourse}
             onEditCourse={openEditCourse}
             onMarkPaid={c=>{setPaidDateInput(c.feeDate||"");setPaidModal({type:"course",id:c.id,name:c.location,currentPaid:c.feePaid});}}
@@ -938,11 +960,40 @@ function App() {
 }
 
 // ── Week View ─────────────────────────────────────────────
-function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCourse,onEditCourse,onMarkPaid,onEditTrans}) {
+function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,personalEvents,onAddPersonal,onEditPersonal,onDelPersonal,expCourse,setExpCourse,onEditCourse,onMarkPaid,onEditTrans}) {
   const DAY_LABELS=["一","二","三","四","五","六","日"];
   const HOURS=["08","09","10","11","12","13","14","15","16","17"];
   const START_HR=8, TOTAL_HRS=HOURS.length;
   const [expTrans, setExpTrans] = React.useState(null);
+  const [pModal, setPModal] = React.useState(null); // {date, hour} | {edit: ev}
+  const [pForm, setPForm] = React.useState({title:"",time:"",endTime:"",color:"#7A6251",note:""});
+
+  const PCOLORS = [
+    {c:"#B87A7A",bg:"#F0E6E6",label:"玫磚紅"},
+    {c:"#A89060",bg:"#EDE8DC",label:"麥穗黃"},
+    {c:"#7A9E82",bg:"#E2EEE4",label:"苔蘚綠"},
+    {c:"#888888",bg:"#FDFAF5",label:"純提醒"},
+  ];
+
+  const openAddModal = (date, hour) => {
+    const hStr = String(hour).padStart(2,"0")+":00";
+    const eStr = String(hour+1).padStart(2,"0")+":00";
+    setPForm({title:"",time:hStr,endTime:eStr,color:"#B87A7A",note:""});
+    setPModal({date,hour});
+  };
+  const openEditModal = (ev) => {
+    setPForm({title:ev.title,time:ev.time||"",endTime:ev.endTime||"",color:ev.color||"#B87A7A",note:ev.note||""});
+    setPModal({edit:ev});
+  };
+  const savePersonal = () => {
+    if (!pForm.title.trim()) return;
+    if (pModal.edit) {
+      onEditPersonal(pModal.edit.id, {...pForm});
+    } else {
+      onAddPersonal({date:pModal.date, ...pForm});
+    }
+    setPModal(null);
+  };
 
   const parseHr = hhmm => {
     if (!hhmm) return null;
@@ -970,12 +1021,12 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
         {weekOff!==0&&<button onClick={()=>setWeekOff(0)} style={{...navBtnS,fontSize:11,padding:"3px 8px"}}>今</button>}
       </div>
       <div style={{overflowX:"auto"}}>
-        <div style={{display:"grid",gridTemplateColumns:"28px repeat(7,1fr)",gap:2,minWidth:360}}>
+        <div style={{display:"grid",gridTemplateColumns:"28px repeat(5,1fr) repeat(2,0.6fr)",gap:2,minWidth:360}}>
           <div/>
           {weekDates.map((dt,i)=>(
-            <div key={dt} style={{textAlign:"center",padding:"4px 0",background:dt===TODAY_STR?"#1F2A44":i>=5?"#EAE3D3":"#FDFAF5",borderRadius:6,marginBottom:2}}>
-              <div style={{fontSize:11,color:dt===TODAY_STR?"#8A9BB5":i>=5?"#aaa":"#aaa"}}>{DAY_LABELS[i]}</div>
-              <div style={{fontSize:13,fontWeight:700,color:dt===TODAY_STR?"#8A9BB5":i>=5?"#4A6080":"#1F2A44"}}>{dt}</div>
+            <div key={dt} style={{textAlign:"center",padding:"4px 0",background:dt===TODAY_STR?"#1F2A44":i>=5?"#E8E7E4":"#FDFAF5",borderRadius:6,marginBottom:2}}>
+              <div style={{fontSize:11,color:dt===TODAY_STR?"#C6A75E":i>=5?"#bbb":"#aaa"}}>{DAY_LABELS[i]}</div>
+              <div style={{fontSize:i>=5?11:13,fontWeight:700,color:dt===TODAY_STR?"#F0EAE0":i>=5?"#888":"#1F2A44"}}>{dt}</div>
             </div>
           ))}
 
@@ -1027,32 +1078,60 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                   const isWeekend=di>=5;
                   return (
                     <div key={hr}
-                      style={{gridRow:hi+1,gridColumn:1,background:isWeekend?"#EAE3D3":"#FDFAF5",
-                        borderRadius:3,border:`0.5px solid ${isWeekend?"#D8D5CE":"#DDD5C4"}`,
-                        position:"relative"}}>
+                      onClick={()=>openAddModal(dt, parseInt(hr))}
+                      style={{gridRow:hi+1,gridColumn:1,background:isWeekend?"#EEECEA":"#FDFAF5",
+                        borderRadius:3,border:`0.5px solid ${isWeekend?"#D8D6D2":"#DDD5C4"}`,
+                        position:"relative",cursor:"pointer"}}>
                     </div>
                   );
+                })}
+
+                {/* Personal event blocks */}
+                {(personalEvents||[]).filter(e=>e.date===dt).map(ev=>{
+                  const g=timeToGrid(ev.time&&ev.endTime?`${ev.time}~${ev.endTime}`:null);
+                  const pc = PCOLORS.find(p=>p.c===ev.color)||PCOLORS[0];
+                  if (g) {
+                    const clamp=Math.min(g.rowSpan, TOTAL_HRS-g.rowStart+1);
+                    if(g.rowStart<1||g.rowStart>TOTAL_HRS) return null;
+                    return (
+                      <div key={ev.id}
+                        onClick={e=>{e.stopPropagation();openEditModal(ev);}}
+                        style={{gridRow:`${g.rowStart} / span ${clamp}`,gridColumn:1,
+                          background:pc.bg,borderRadius:4,padding:"4px 6px",cursor:"pointer",
+                          border:"none",overflow:"hidden",zIndex:3}}>
+                        <div style={{fontSize:10,color:"#555",fontWeight:700,lineHeight:1.4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>◷ {ev.title}</div>
+                        {ev.time&&<div style={{fontSize:9,color:"#888"}}>{ev.time}{ev.endTime?`~${ev.endTime}`:""}</div>}
+                        {ev.note&&<div style={{fontSize:9,color:"#999",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:1}}>{ev.note}</div>}
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={ev.id}
+                        onClick={e=>{e.stopPropagation();openEditModal(ev);}}
+                        style={{gridRow:"1 / span 1",gridColumn:1,
+                          background:pc.bg,borderRadius:4,padding:"3px 5px",cursor:"pointer",
+                          border:"none",overflow:"hidden",zIndex:3,marginTop:2}}>
+                        <div style={{fontSize:9,color:"#555",fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>◷ {ev.title}</div>
+                      </div>
+                    );
+                  }
                 })}
 
                 {/* Translate deadline blocks (8:00-9:00 slot) */}
                 {[...transDeadlines,...transPaid].map((t,idx)=>{
                   const isPaid=transPaid.includes(t);
-                  const bg    =expTrans===t.id?(isPaid?"#C9D7DD":"#E8DDD4"):(isPaid?"#D5DFF0":"#E8DABB");
-                  const bdr   =expTrans===t.id?(isPaid?"1.5px solid #4A6080":"1.5px solid #7A6251"):(isPaid?"1px solid #8A9BB5":"1px solid #C6A75E");
-                  const color =isPaid?"#1F2A44":"#6B4F3A";
-                  const label =isPaid?"◈":"⟐";
+                  const bg = isPaid?"#E5DDD4":"#EDE0CF";
                   const shortName=t.name.replace(/^\[.*?\]\s*/,"");
-                  // stack multiple items: each takes rowStart=1 but offset via marginTop hack
+                  const label =isPaid?"◈":"⟐";
                   return (
                     <div key={t.id}
                       onClick={ev=>{ev.stopPropagation();setExpTrans(expTrans===t.id?null:t.id);}}
                       style={{gridRow:`1 / span 1`,gridColumn:1,
                         background:bg,borderRadius:4,padding:"4px 6px",cursor:"pointer",
-                        border:bdr,overflow:"hidden",zIndex:2+idx,
+                        border:"none",overflow:"hidden",zIndex:2+idx,
                         marginTop:idx*38}}>
-                      <div style={{fontSize:10,color,fontWeight:700,lineHeight:1.4}}>{label} 翻譯</div>
-                      <div style={{fontSize:10,color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{shortName}</div>
-
+                      <div style={{fontSize:10,color:"#555",fontWeight:700,lineHeight:1.4}}>{label} 翻譯</div>
+                      <div style={{fontSize:10,color:"#777",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{shortName}</div>
                     </div>
                   );
                 })}
@@ -1067,12 +1146,11 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
                     <div key={c.id}
                       onClick={e=>{e.stopPropagation();setExpCourse(expCourse===c.id?null:c.id);}}
                       style={{gridRow:`${g.rowStart} / span ${clamp}`,gridColumn:1,
-                        background:"#D5DFF0",borderRadius:4,padding:"4px 6px",cursor:"pointer",
-                        border:expCourse===c.id?"1.5px solid #1F2A44":"1px solid #8A9BB5",
-                        overflow:"hidden",zIndex:2}}>
-                      <div style={{fontSize:10,color:"#1F2A44",fontWeight:700,lineHeight:1.4}}>⊞ 授課</div>
-                      <div style={{fontSize:10,color:"#4A6080",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.location.replace("香山區-","").replace("(華鹿)","").replace("(懷安)","")}</div>
-                      <div style={{fontSize:9,color:"#8C9BA3"}}>{c.time}</div>
+                        background:"#E4EAF0",borderRadius:4,padding:"4px 6px",cursor:"pointer",
+                        border:"none",overflow:"hidden",zIndex:2}}>
+                      <div style={{fontSize:10,color:"#555",fontWeight:700,lineHeight:1.4}}>⊞ 授課</div>
+                      <div style={{fontSize:10,color:"#777",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.location.replace("香山區-","").replace("(華鹿)","").replace("(懷安)","")}</div>
+                      <div style={{fontSize:9,color:"#999"}}>{c.time}</div>
                     </div>
                   );
                 })}
@@ -1085,13 +1163,74 @@ function WeekView({weekDates,weekOff,setWeekOff,courses,tasks,expCourse,setExpCo
       {/* Expanded course detail */}
       {expCourse&&(()=>{
         const c=courses.find(x=>x.id===expCourse); if(!c) return null;
-        return <div style={{marginLeft:30}}><CoursePanel c={c} onClose={()=>setExpCourse(null)} onEdit={()=>onEditCourse(c)} onMarkPaid={()=>{setPaidDateInput(c.feeDate||"");setPaidModal({type:"course",id:c.id,name:c.location,currentPaid:c.feePaid});}}/></div>;
+        return <div style={{marginTop:6,marginLeft:30}}><CoursePanel c={c} onClose={()=>setExpCourse(null)} onEdit={()=>onEditCourse(c)} onMarkPaid={()=>{setPaidDateInput(c.feeDate||"");setPaidModal({type:"course",id:c.id,name:c.location,currentPaid:c.feePaid});}}/></div>;
       })()}
       {/* Expanded translate detail */}
       {expTrans&&(()=>{
         const t=tasks.find(x=>x.id===expTrans); if(!t) return null;
-        return <div style={{marginLeft:30}}><TransPanel t={t} onClose={()=>setExpTrans(null)} onEdit={()=>{setExpTrans(null);onEditTrans(t);}}/></div>;
+        return <div style={{marginTop:6,marginLeft:30}}><TransPanel t={t} onClose={()=>setExpTrans(null)} onEdit={()=>{setExpTrans(null);onEditTrans(t);}}/></div>;
       })()}
+
+      {/* Personal event modal */}
+      {pModal&&(
+        <div onMouseDown={e=>{if(e.target===e.currentTarget)setPModal(null);}}
+          style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.45)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"#FDFAF5",borderRadius:14,padding:"18px 16px",width:"100%",maxWidth:320}}>
+            <div style={{fontSize:13,fontWeight:700,marginBottom:12,color:"#1F2A44"}}>
+              {pModal.edit?"編輯個人行程":"＋ 新增個人行程"}
+              {pModal.date&&!pModal.edit&&<span style={{fontSize:11,fontWeight:400,color:"#888",marginLeft:6}}>{pModal.date}（{DAYS_ZH[new Date(2026,...pModal.date.split("/").map((v,i)=>i===0?+v-1:+v)).getDay()]}）</span>}
+            </div>
+            <div style={{marginBottom:8}}>
+              <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:3}}>名稱 <span style={{color:"#e74c3c"}}>*</span></div>
+              <input value={pForm.title} onChange={e=>setPForm(f=>({...f,title:e.target.value}))}
+                placeholder="古箏課、學校活動…" autoFocus
+                onKeyDown={e=>e.key==="Enter"&&savePersonal()}
+                style={{width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",fontSize:13,fontFamily:"inherit",outline:"none",background:"#FDFAF5",boxSizing:"border-box"}}/>
+            </div>
+            <div style={{display:"flex",gap:6,marginBottom:8}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:3}}>開始</div>
+                <input value={pForm.time} onChange={e=>setPForm(f=>({...f,time:e.target.value}))}
+                  placeholder="09:00"
+                  style={{width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",fontSize:12,fontFamily:"inherit",outline:"none",background:"#FDFAF5",boxSizing:"border-box"}}/>
+              </div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:3}}>結束</div>
+                <input value={pForm.endTime} onChange={e=>setPForm(f=>({...f,endTime:e.target.value}))}
+                  placeholder="10:00"
+                  style={{width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",fontSize:12,fontFamily:"inherit",outline:"none",background:"#FDFAF5",boxSizing:"border-box"}}/>
+              </div>
+            </div>
+            <div style={{marginBottom:10}}>
+              <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:5}}>顏色標記</div>
+              <div style={{display:"flex",gap:6}}>
+                {PCOLORS.map(p=>(
+                  <div key={p.c} onClick={()=>setPForm(f=>({...f,color:p.c}))}
+                    style={{flex:1,padding:"5px 4px",borderRadius:7,background:p.bg,border:`2px solid ${pForm.color===p.c?p.c:"transparent"}`,cursor:"pointer",textAlign:"center"}}>
+                    <div style={{fontSize:9,color:p.c,fontWeight:600}}>{p.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:11,fontWeight:600,color:"#555",marginBottom:3}}>備註</div>
+              <input value={pForm.note} onChange={e=>setPForm(f=>({...f,note:e.target.value}))}
+                placeholder="（選填）"
+                style={{width:"100%",padding:"7px 10px",borderRadius:8,border:"1.5px solid #DDD5C4",fontSize:12,fontFamily:"inherit",outline:"none",background:"#FDFAF5",boxSizing:"border-box"}}/>
+            </div>
+            <div style={{display:"flex",gap:7,justifyContent:"space-between"}}>
+              {pModal.edit&&<button onClick={()=>{onDelPersonal(pModal.edit.id);setPModal(null);}}
+                style={{padding:"6px 12px",borderRadius:8,border:"none",background:"#c0392b",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>刪除</button>}
+              <div style={{display:"flex",gap:7,marginLeft:"auto"}}>
+                <button onClick={()=>setPModal(null)}
+                  style={{padding:"6px 14px",borderRadius:8,border:"none",background:"#f0f0f0",color:"#555",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>取消</button>
+                <button onClick={savePersonal}
+                  style={{padding:"6px 14px",borderRadius:8,border:"none",background:"#1F2A44",color:"#F0EAE0",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>儲存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
@@ -1917,32 +2056,32 @@ function TransPanel({t,onClose,onEdit}) {
   const publisher = nameMatch ? nameMatch[1] : "";
   const title     = nameMatch ? nameMatch[2] : t.name;
   return (
-    <div style={{background:"#E8DABB",border:"1.5px solid #C6A75E",borderRadius:9,padding:"10px",marginBottom:6,marginTop:-3}}>
+    <div style={{background:"#EDE0CF",border:"none",borderRadius:9,padding:"10px",marginBottom:6}}>
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#1F2A44",marginBottom:2}}>{title}</div>
-          {publisher&&<div style={{fontSize:10,color:"#7A6251",letterSpacing:".5px",marginBottom:4}}>{publisher}</div>}
-          {t.deadline&&<div style={{fontSize:10,color:"#8C8880"}}>◎ 截稿日：{t.deadline}</div>}
+          <div style={{fontSize:12,fontWeight:700,color:"#444",marginBottom:2}}>{title}</div>
+          {publisher&&<div style={{fontSize:10,color:"#888",letterSpacing:".5px",marginBottom:4}}>{publisher}</div>}
+          {t.deadline&&<div style={{fontSize:10,color:"#888"}}>◎ 截稿日：{t.deadline}</div>}
           {t.fee&&(
-            <div style={{marginTop:6,padding:"8px 10px",background:"#EDE5D4",borderRadius:7,border:"1px solid #C6A75E"}}>
+            <div style={{marginTop:6,padding:"8px 10px",background:"#F5EEE4",borderRadius:7}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                <span style={{fontSize:11,fontWeight:600,color:"#6B6558"}}>◈ 稿費</span>
+                <span style={{fontSize:11,fontWeight:600,color:"#666"}}>◈ 稿費</span>
                 <span style={{fontSize:10,padding:"2px 8px",borderRadius:99,fontWeight:600,
-                  background:t.feePaid?"#D5DFF0":"#E8DABB",
-                  color:t.feePaid?"#1F2A44":"#7A6251"}}>
+                  background:t.feePaid?"#E0EAE0":"#F0E8DC",
+                  color:t.feePaid?"#4A6A4A":"#7A6251"}}>
                   {t.feePaid?"✓ 已入帳":"· 待入帳"}
                 </span>
               </div>
-              <div style={{fontSize:11,color:"#1F2A44"}}>金額：<strong>{t.fee}</strong></div>
-              {t.feeBank&&<div style={{fontSize:10,color:"#8C8880",marginTop:2}}>匯入：{t.feeBank}</div>}
-              {t.feeDate&&<div style={{fontSize:10,color:"#8C8880",marginTop:1}}>預計入帳：{t.feeDate}</div>}
+              <div style={{fontSize:11,color:"#444"}}>金額：<strong>{t.fee}</strong></div>
+              {t.feeBank&&<div style={{fontSize:10,color:"#888",marginTop:2}}>匯入：{t.feeBank}</div>}
+              {t.feeDate&&<div style={{fontSize:10,color:"#888",marginTop:1}}>預計入帳：{t.feeDate}</div>}
             </div>
           )}
-          {!t.deadline&&!t.fee&&<div style={{fontSize:10,color:"#C4BDB5"}}>無額外資訊</div>}
+          {!t.deadline&&!t.fee&&<div style={{fontSize:10,color:"#bbb"}}>無額外資訊</div>}
         </div>
         <div style={{display:"flex",gap:4,alignSelf:"flex-start",flexShrink:0,marginLeft:8}}>
-          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #C6A75E",background:"#EDE5D4",color:"#6B6558",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>編輯</button>}
-          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:"1px solid #C6A75E",background:"#EDE5D4",color:"#8A9BB5",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#E8D8C4",color:"#666",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>編輯</button>}
+          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#E8D8C4",color:"#999",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
       </div>
     </div>
@@ -1950,43 +2089,40 @@ function TransPanel({t,onClose,onEdit}) {
 }
 
 function CoursePanel({c,onClose,onEdit,onMarkPaid}) {
-  const cc="#1F2A44";
-  const cb="#D5DFF0";
   return (
-    <div style={{background:cb,border:`1.5px solid ${cc}44`,borderRadius:9,padding:"10px",marginBottom:6,marginTop:-3}}>
-      {/* 標題列：日期＋編輯＋關閉 */}
+    <div style={{background:"#E4EAF0",border:"none",borderRadius:9,padding:"10px",marginBottom:6}}>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:6}}>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",marginBottom:2}}>
-            <span style={{fontSize:13,fontWeight:700,color:"#1F2A44"}}>{c.date}</span>
-            <span style={{fontSize:11,color:"#8C8880"}}>（{toWeek(c.date)}）{c.time}</span>
-            <span style={{...pill(cc,cb),border:`1px solid ${cc}55`}}>{CAT_LABEL[c.category]}</span>
+            <span style={{fontSize:13,fontWeight:700,color:"#333"}}>{c.date}</span>
+            <span style={{fontSize:11,color:"#888"}}>（{toWeek(c.date)}）{c.time}</span>
+            <span style={{fontSize:10,padding:"1px 7px",borderRadius:99,background:"#D4DCE8",color:"#555"}}>{CAT_LABEL[c.category]}</span>
           </div>
-          <div style={{fontSize:11,color:"#6B6558",marginBottom:c.content?3:0}}>📍 {c.location}</div>
-          {c.content&&<div style={{fontSize:11,color:cc,marginBottom:3,lineHeight:1.5}}>{c.content}</div>}
-          {c.assistants?.length>0&&<div style={{fontSize:11,color:"#6B6558",marginBottom:3}}>· 助教：{c.assistants.join("、")}</div>}
-          {c.slideUrl&&<a href={c.slideUrl} target="_blank" rel="noreferrer" style={{fontSize:11,color:cc,display:"block",marginBottom:3}}>⟐ 簡報連結</a>}
-          {c.note&&<div style={{fontSize:11,color:"#8C8880",marginBottom:3}}>· {c.note}</div>}
+          <div style={{fontSize:11,color:"#666",marginBottom:c.content?3:0}}>📍 {c.location}</div>
+          {c.content&&<div style={{fontSize:11,color:"#444",marginBottom:3,lineHeight:1.5}}>{c.content}</div>}
+          {c.assistants?.length>0&&<div style={{fontSize:11,color:"#666",marginBottom:3}}>· 助教：{c.assistants.join("、")}</div>}
+          {c.slideUrl&&<a href={c.slideUrl} target="_blank" rel="noreferrer" style={{fontSize:11,color:"#4A6080",display:"block",marginBottom:3}}>⟐ 簡報連結</a>}
+          {c.note&&<div style={{fontSize:11,color:"#888",marginBottom:3}}>· {c.note}</div>}
           {c.fee&&(
-            <div style={{marginTop:6,padding:"8px 10px",background:"#EDE5D4",borderRadius:7,border:`1px solid ${cc}33`}}>
+            <div style={{marginTop:6,padding:"8px 10px",background:"#EEF2F8",borderRadius:7}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                <span style={{fontSize:11,fontWeight:600,color:"#6B6558"}}>◈ 講師費</span>
+                <span style={{fontSize:11,fontWeight:600,color:"#666"}}>◈ 講師費</span>
                 <button onClick={onMarkPaid} style={{fontSize:10,padding:"2px 8px",borderRadius:99,border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600,
-                  background:c.feePaid?"#D5DFF0":"#E8DABB",
-                  color:c.feePaid?"#1F2A44":"#7A6251"}}>
+                  background:c.feePaid?"#D8E8D8":"#EDE8DC",
+                  color:c.feePaid?"#4A6A4A":"#7A6251"}}>
                   {c.feePaid?"✓ 已入帳":"· 標記入帳"}
                 </button>
               </div>
-              <div style={{fontSize:11,color:"#1F2A44"}}>金額：<strong>{c.fee}</strong></div>
-              {c.feeBank&&<div style={{fontSize:10,color:"#8C8880",marginTop:2}}>匯入：{c.feeBank}</div>}
-              {c.feeDate&&<div style={{fontSize:10,color:"#8C8880",marginTop:1}}>預計入帳：{c.feeDate}</div>}
-              {c.feePaidDate&&<div style={{fontSize:10,color:"#4A6080",marginTop:1,fontWeight:600}}>✓ 實際入帳：{c.feePaidDate}</div>}
+              <div style={{fontSize:11,color:"#444"}}>金額：<strong>{c.fee}</strong></div>
+              {c.feeBank&&<div style={{fontSize:10,color:"#888",marginTop:2}}>匯入：{c.feeBank}</div>}
+              {c.feeDate&&<div style={{fontSize:10,color:"#888",marginTop:1}}>預計入帳：{c.feeDate}</div>}
+              {c.feePaidDate&&<div style={{fontSize:10,color:"#5A7A5A",marginTop:1,fontWeight:600}}>✓ 實際入帳：{c.feePaidDate}</div>}
             </div>
           )}
         </div>
         <div style={{display:"flex",gap:4,alignSelf:"flex-start",flexShrink:0,marginLeft:8}}>
-          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#EDE5D4",color:"#6B6558",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✎</button>}
-          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:`1px solid ${cc}44`,background:"#EDE5D4",color:"#8A9BB5",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+          {onEdit&&<button onClick={onEdit} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#D4DCE8",color:"#555",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✎</button>}
+          <button onClick={onClose} style={{padding:"2px 7px",borderRadius:5,border:"none",background:"#D4DCE8",color:"#999",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
       </div>
     </div>
