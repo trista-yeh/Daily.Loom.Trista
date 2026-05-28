@@ -20,6 +20,8 @@
     /* 防止 iOS 點擊高亮 */
     * { -webkit-tap-highlight-color: transparent; }
   </style>
+  <!-- Google Identity Services for Tasks API -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
   <div id="root"></div>
@@ -364,6 +366,107 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     window.fbReady = true;
     window.dispatchEvent(new Event("fbReady"));
   </script>
+  <script>
+    // ── Google Tasks API 整合 ──────────────────────────────
+    // 請將下方 CLIENT_ID 換成你在 Google Cloud Console 建立的 OAuth 2.0 用戶端 ID
+    const GTASKS_CLIENT_ID = "331723647052-19t56gvqecnlti1eiv6cc06a8hegf66t.apps.googleusercontent.com";
+    const GTASKS_SCOPE = "https://www.googleapis.com/auth/tasks";
+
+    let gTokenClient = null;
+    let gAccessToken = null;
+    let gTokenExpiry = 0;
+    let gPendingTask = null; // 等授權完成後要建立的任務
+
+    // 初始化 token client
+    window.initGTasks = () => {
+      if (!window.google?.accounts?.oauth2) {
+        console.warn("GIS 尚未載入");
+        return;
+      }
+      gTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GTASKS_CLIENT_ID,
+        scope: GTASKS_SCOPE,
+        callback: (resp) => {
+          if (resp.error) {
+            console.error("Google Tasks 授權失敗", resp.error);
+            return;
+          }
+          gAccessToken = resp.access_token;
+          gTokenExpiry = Date.now() + (resp.expires_in - 60) * 1000;
+          // 授權成功後，執行待建任務
+          if (gPendingTask) {
+            const task = gPendingTask;
+            gPendingTask = null;
+            window._createGTask(task.title, task.due, task.notes);
+          }
+        }
+      });
+    };
+
+    // 建立 Google Tasks 任務
+    window.addToGoogleTasks = (title, due, notes) => {
+      if (!gTokenClient) {
+        window.initGTasks();
+        if (!gTokenClient) return; // GIS 未載入
+      }
+      const doCreate = () => window._createGTask(title, due, notes);
+      if (gAccessToken && Date.now() < gTokenExpiry) {
+        doCreate();
+      } else {
+        gPendingTask = { title, due, notes };
+        gTokenClient.requestAccessToken({ prompt: "" });
+      }
+    };
+
+    // 實際呼叫 Google Tasks API
+    window._createGTask = async (title, due, notes) => {
+      try {
+        const body = { title, notes: notes || "" };
+        // due 格式：deadline 為 "M/D" 或 "YYYY/M"，轉為 RFC 3339
+        if (due) {
+          const now = new Date();
+          const parts = due.split("/").map(Number);
+          let d;
+          if (parts.length === 2 && parts[0] <= 12) {
+            // M/D 格式
+            d = new Date(now.getFullYear(), parts[0] - 1, parts[1] || 1);
+          } else if (parts.length === 2) {
+            // YYYY/M 格式
+            d = new Date(parts[0], parts[1] - 1, 1);
+          }
+          if (d) body.due = d.toISOString();
+        }
+        const res = await fetch(
+          "https://tasks.googleapis.com/tasks/v1/lists/@default/tasks",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${gAccessToken}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        console.log("✅ Google Tasks 任務已建立：", title);
+      } catch (e) {
+        console.error("Google Tasks 建立失敗", e);
+      }
+    };
+
+    // 等待 GIS 載入完成再初始化（polling 方式，最多等 10 秒）
+    (function waitGIS(retry) {
+      if (window.google?.accounts?.oauth2) {
+        window.initGTasks();
+      } else if (retry > 0) {
+        setTimeout(() => waitGIS(retry - 1), 200);
+      } else {
+        console.warn("Warning: GIS 尚未載入");
+      }
+    })(50);
+  </script>
+
+
 
   <script>
 const {
@@ -2046,8 +2149,8 @@ const EMPTY_CAL = {
 
 //  App 
 function App() {
-  const [courses, setCourses] = useState(INIT_COURSES);
-  const [tasks, setTasks] = useState(() => [...INIT_TASKS, ...genTeachTasks(INIT_COURSES)]);
+  const [courses, setCourses] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [freeTasks, setFreeTasks] = useState([]);
   const [calEvents, setCalEvents] = useState([]);
   const [personalEvents, setPersonalEvents] = useState([]);
@@ -2065,32 +2168,7 @@ function App() {
   // home filter
   const [homeTab, setHomeTab] = useState("tasks");
   //  + 
-  const [translates, setTranslates] = useState(() => {
-    // 
-    const base = INIT_TRANSLATES.map(t => ({
-      ...t,
-      deadline: "",
-      fee: "",
-      feeBank: "",
-      feeDate: "",
-      feePaid: false,
-      feePaidDate: "",
-      pubNote: t.note || ""
-    }));
-    //  INIT_TASKS  archived
-    const taskMap = {};
-    INIT_TASKS.filter(t => t.type === "translate").forEach(t => {
-      taskMap[t.id] = {
-        deadline: t.deadline || "",
-        fee: t.fee || "",
-        feeBank: t.feeBank || "",
-        feeDate: t.feeDate || "",
-        feePaid: t.feePaid || false,
-        feePaidDate: t.feePaidDate || ""
-      };
-    });
-    return base;
-  });
+  const [translates, setTranslates] = useState([]);
   // modals
   const [logModal, setLogModal] = useState(null);
   const [courseModal, setCourseModal] = useState(null); // {mode:"add"|"edit", data?}
@@ -2137,52 +2215,27 @@ function App() {
           if (raw) p = JSON.parse(raw);
         }
         if (p) {
+          // Firebase / localStorage 有資料：完全以儲存資料為準，不補 INIT
           if (p.courses?.length) setCourses(p.courses);
           if (p.tasks?.length) setTasks(p.tasks);
           if (p.freeTasks) setFreeTasks(p.freeTasks);
           if (p.nextId) setNextId(p.nextId);
           if (p.translates?.length) {
-            //  INIT_TRANSLATES  FB 
-            const initMap = {};
-            INIT_TRANSLATES.forEach(t => {
-              initMap[t.id] = {
-                ...t,
-                deadline: "",
-                fee: "",
-                feeBank: "",
-                feeDate: "",
-                feePaid: false,
-                feePaidDate: "",
-                pubNote: t.note || ""
-              };
-            });
-            const fbIds = new Set(p.translates.map(t => t.id));
-            const fbMap = {};
-            p.translates.forEach(t => {
-              fbMap[t.id] = t;
-            });
-            //  id  keyINIT FB FB 
-            const seen = new Set();
-            const merged = [];
-            //  INIT FB 
-            INIT_TRANSLATES.forEach(t => {
-              seen.add(t.id);
-              merged.push(fbMap[t.id] ? {
-                ...initMap[t.id],
-                ...fbMap[t.id]
-              } : initMap[t.id]);
-            });
-            //  FB  INIT 
-            p.translates.forEach(t => {
-              if (!seen.has(t.id)) {
-                seen.add(t.id);
-                merged.push(t);
-              }
-            });
-            setTranslates(merged);
+            // Firebase 資料為唯一來源，完全以 Firebase 為準
+            // 不再強制補回 INIT_TRANSLATES，避免已刪除的書目重複出現
+            setTranslates(p.translates);
           }
           if (p.calEvents?.length) setCalEvents(p.calEvents);
           if (p.personalEvents?.length) setPersonalEvents(p.personalEvents);
+        } else {
+          // 全新裝置且 Firebase/localStorage 皆無資料時，才用 INIT 作為起始資料
+          setCourses(INIT_COURSES);
+          setTasks([...INIT_TASKS, ...genTeachTasks(INIT_COURSES)]);
+          setTranslates(INIT_TRANSLATES.map(t => ({
+            ...t,
+            deadline: "", fee: "", feeBank: "", feeDate: "",
+            feePaid: false, feePaidDate: "", pubNote: t.note || ""
+          })));
         }
       } catch (e) {
         console.error("load error", e);
@@ -2266,6 +2319,10 @@ function App() {
       setTasks(tupd);
       setNextId(nid);
       persist(upd, tupd, freeTasks, calEvents, nid);
+      // 同步到 Google Tasks
+      const courseTitle = `[課表] ${nc.location} 第${nc.session}堂`;
+      const courseNotes = `日期：${nc.date}　時間：${nc.time || ""}`;
+      if (window.addToGoogleTasks) window.addToGoogleTasks(courseTitle, nc.date, courseNotes);
     } else {
       const upd = courses.map(c => c.id !== courseModal.id ? c : {
         ...c,
@@ -2318,6 +2375,8 @@ function App() {
     setTaskModal(false);
     setTaskForm(EMPTY_TASK);
     toast2("已新增任務 ✓");
+    // 同步到 Google Tasks
+    if (window.addToGoogleTasks) window.addToGoogleTasks(t.name, t.deadline, `類型：${t.type}`);
   };
   const delTask = id => {
     const upd = tasks.filter(t => t.id !== id);
@@ -2518,6 +2577,9 @@ function App() {
       setTasks(tupd);
       setNextId(nid + 1);
       persist(courses, tupd, freeTasks, calEvents, nid + 1, newTranslates);
+      // 同步到 Google Tasks
+      const transTitle = `[翻譯] ${transForm.publisher ? "[" + transForm.publisher + "] " : ""}${transForm.title}`;
+      if (window.addToGoogleTasks) window.addToGoogleTasks(transTitle, transForm.deadline, "");
     } else {
       // task_  INIT_TASKS translates  tasks
       if (transModal.id?.startsWith("task_")) {
