@@ -4,7 +4,22 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Daily Loom · Trista</title>
-  <style>* { margin:0; padding:0; box-sizing:border-box; } body { background:#EDE5D4; }</style>
+
+  <!-- PWA：加入主畫面後全螢幕顯示 -->
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Daily Loom"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#1F2A44"/>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#EDE5D4; }
+    /* 防止 iOS 長按選取文字 */
+    body { -webkit-user-select:none; user-select:none; }
+    /* 防止 iOS 點擊高亮 */
+    * { -webkit-tap-highlight-color: transparent; }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -6225,7 +6240,7 @@ function TransView({
       borderRadius: 8,
       border: "none",
       cursor: "pointer",
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: 500,
       fontFamily: "inherit",
       background: transTab === k ? "#1F2A44" : "transparent",
@@ -6252,7 +6267,7 @@ function TransView({
       textAlign: "center",
       padding: "40px",
       color: "#ccc",
-      fontSize: 14
+      fontSize: 12
     }
   }, "\u5C1A\u7121\u9032\u884C\u4E2D\u7684\u7FFB\u8B6F\u6848\u4EF6"), (() => {
     const groups = {};
@@ -6332,7 +6347,7 @@ function TransView({
         }
       }, t.publisher), /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 15,
+          fontSize: 13,
           fontWeight: 400,
           color: "#2A2A2A",
           lineHeight: 1.4
@@ -6446,7 +6461,7 @@ function TransView({
       border: `1px solid ${archiveSort === "asc" ? "#1F2A44" : "#e0e0e0"}`,
       background: archiveSort === "asc" ? "#1F2A44" : "#fff",
       color: archiveSort === "asc" ? "#C6A75E" : "#bbb",
-      fontSize: 14,
+      fontSize: 12,
       cursor: "pointer",
       lineHeight: 1
     }
@@ -6458,7 +6473,7 @@ function TransView({
       border: `1px solid ${archiveSort === "desc" ? "#1F2A44" : "#e0e0e0"}`,
       background: archiveSort === "desc" ? "#1F2A44" : "#fff",
       color: archiveSort === "desc" ? "#C6A75E" : "#bbb",
-      fontSize: 14,
+      fontSize: 12,
       cursor: "pointer",
       lineHeight: 1
     }
@@ -6476,7 +6491,7 @@ function TransView({
       border: `1px solid ${archiveView === "list" ? "#1F2A44" : "#e0e0e0"}`,
       background: archiveView === "list" ? "#1F2A44" : "#fff",
       color: archiveView === "list" ? "#C6A75E" : "#bbb",
-      fontSize: 14,
+      fontSize: 12,
       cursor: "pointer",
       lineHeight: 1
     }
@@ -6489,7 +6504,7 @@ function TransView({
       border: `1px solid ${archiveView === "grid" ? "#1F2A44" : "#e0e0e0"}`,
       background: archiveView === "grid" ? "#1F2A44" : "#fff",
       color: archiveView === "grid" ? "#C6A75E" : "#bbb",
-      fontSize: 14,
+      fontSize: 12,
       cursor: "pointer",
       lineHeight: 1
     }
@@ -6498,7 +6513,7 @@ function TransView({
       textAlign: "center",
       padding: "40px",
       color: "#ccc",
-      fontSize: 14
+      fontSize: 12
     }
   }, "\u5C1A\u7121\u4F5C\u54C1"), archiveView === "list" && (() => {
     const ArchiveCard = ({
@@ -6538,7 +6553,7 @@ function TransView({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 16,
+          fontSize: 14,
           color: "#D4C8B8",
           cursor: "pointer"
         }
@@ -6598,7 +6613,7 @@ function TransView({
         }
       }, "\u5F85\u51FA\u7248")), /*#__PURE__*/React.createElement("div", {
         style: {
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: 400,
           color: "#2A2A2A",
           lineHeight: 1.3,
@@ -6901,14 +6916,14 @@ function TransView({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 15,
+      fontSize: 13,
       fontWeight: 600,
       color: "#1F2A44",
       marginBottom: 4
     }
   }, coverModal.title), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 13,
+      fontSize: 12,
       color: "#888",
       marginBottom: 10
     }
@@ -6936,7 +6951,7 @@ function TransView({
       padding: "8px 10px",
       borderRadius: 8,
       border: "1.5px solid #DDD5C4",
-      fontSize: 14,
+      fontSize: 12,
       fontFamily: "inherit",
       marginBottom: 10,
       outline: "none"
@@ -6950,7 +6965,7 @@ function TransView({
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => setCoverModal(null),
     style: btnS("#888", "#f0f0f0", {
-      fontSize: 14,
+      fontSize: 12,
       padding: "5px 12px"
     })
   }, "\u53D6\u6D88"), /*#__PURE__*/React.createElement("button", {
@@ -6963,7 +6978,7 @@ function TransView({
       setCoverModal(null);
     },
     style: btnS("#1F2A44", "#E8DABB", {
-      fontSize: 14,
+      fontSize: 12,
       padding: "5px 12px"
     })
   }, "\u5132\u5B58\u5C01\u9762"))))));
