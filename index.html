@@ -20,6 +20,581 @@
     /* 防止 iOS 點擊高亮 */
     * { -webkit-tap-highlight-color: transparent; }
   </style>
+
+  <!-- ═══════════════════════════════════════════
+       DAILY LOOM · 視覺精緻化 CSS
+       策略：CSS 覆蓋層，不動邏輯
+  ═══════════════════════════════════════════ -->
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --ink-deep:    #1A2440;
+      --ink-mid:     #2B3A58;
+      --gold:        #C6A75E;
+      --gold-light:  #D4B870;
+      --gold-pale:   #F0E6C8;
+      --warm-bg:     #EDE5D4;
+      --warm-paper:  #F7F2EA;
+      --warm-white:  #FDFAF5;
+      --warm-border: #E2D8C8;
+      --warm-dark:   #D8CEBA;
+      --text-main:   #2C2518;
+      --text-mid:    #6B5F4A;
+      --text-light:  #9A8E7A;
+      --radius-card: 14px;
+      --radius-sm:   9px;
+      --shadow-card: 0 2px 12px rgba(31,26,18,.08), 0 1px 3px rgba(31,26,18,.05);
+      --shadow-lift: 0 4px 20px rgba(31,26,18,.12), 0 1px 4px rgba(31,26,18,.06);
+      --transition:  all .2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Body & Background ── */
+    body {
+      background: var(--warm-bg) !important;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E") !important;
+    }
+
+    /* ── Header 精緻漸層 ── */
+    #root > div > div:first-of-type {
+      background: linear-gradient(160deg, #1A2440 0%, #22304E 60%, #2B3A58 100%) !important;
+      border-bottom: 1px solid rgba(198,167,94,.15) !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,.18) !important;
+      padding: 20px 18px 16px !important;
+    }
+
+    /* ── Google Fonts 升級 ── */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Raleway:wght@200;300;400;600;700&display=swap');
+
+    /* ── 全域字體 ── */
+    body, button, input, textarea, select {
+      font-family: "Noto Sans TC", "PingFang TC", "蘋方-繁", sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── 內容區 padding ── */
+    #root > div > div:nth-child(3) {
+      padding: 14px 14px 16px !important;
+    }
+
+    /* ── 卡片類元件 (白底 FDFAF5) ── */
+    div[style*="background: rgb(253, 250, 245)"],
+    div[style*="background: #FDFAF5"],
+    div[style*='background: "#FDFAF5"'],
+    div[style*="background:#FDFAF5"],
+    div[style*="background: rgb(253,250,245)"] {
+      background: var(--warm-white) !important;
+      border-radius: var(--radius-card) !important;
+      box-shadow: var(--shadow-card) !important;
+      border: 1px solid var(--warm-border) !important;
+    }
+
+    /* ── 週曆時間格 & 事件卡：排除大圓角覆蓋 ── */
+    div[style*="background: rgb(253, 250, 245)"][style*="cursor: pointer"][style*="position: relative"],
+    div[style*="background: #FDFAF5"][style*="cursor: pointer"][style*="position: relative"],
+    div[style*="background: rgb(236, 234, 228)"][style*="cursor: pointer"][style*="position: relative"],
+    div[style*="background: #ECEAE4"][style*="cursor: pointer"][style*="position: relative"] {
+      border-radius: 3px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* ── 行事曆事件 chip：排除大圓角 ── */
+    div[style*="border-radius: 4px"][style*="cursor: pointer"][style*="overflow: hidden"],
+    div[style*="borderRadius: 4"][style*="cursor: pointer"][style*="overflow: hidden"] {
+      border-radius: 4px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    /* 授課 chip D8E0E8 */
+    div[style*="background: rgb(216, 224, 232)"][style*="cursor: pointer"] {
+      border-radius: 4px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    /* 翻譯 chip EDE0CF / E8E4DC */
+    div[style*="background: rgb(237, 224, 207)"][style*="cursor: pointer"],
+    div[style*="background: rgb(232, 228, 220)"][style*="cursor: pointer"] {
+      border-radius: 4px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    /* 個人行程 chip */
+    div[style*="grid-row"][style*="cursor: pointer"][style*="overflow: hidden"] {
+      border-radius: 4px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* ── 日期欄頭：固定圓角 6，不被卡片規則覆蓋 ── */
+    div[style*="text-align: center"][style*="padding: 5px 2px"],
+    div[style*="text-align: center"][style*="background: rgb(230, 226, 216)"],
+    div[style*="text-align: center"][style*="background: rgb(253, 250, 245)"][style*="border-radius: 6px"] {
+      border-radius: 6px !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* ── 課程展開卡 D4DDE8 ── */
+    div[style*="background: rgb(212, 221, 232)"],
+    div[style*="background:#D4DDE8"],
+    div[style*="background: #D4DDE8"] {
+      background: #F2EDE4 !important;
+      border-radius: 10px !important;
+      box-shadow: var(--shadow-card) !important;
+      border: 1px solid #E2D8C8 !important;
+    }
+
+    /* ── 費用子卡 F5EEE4 ── */
+    div[style*="background: rgb(245, 238, 228)"],
+    div[style*="background:#F5EEE4"],
+    div[style*="background: #F5EEE4"] {
+      background: #FAF7F2 !important;
+      border-radius: 7px !important;
+      border: 1px solid #E2D8C8 !important;
+    }
+
+    /* ── 費用子卡 BDD0DC (課程) ── */
+    div[style*="background: rgb(189, 208, 220)"],
+    div[style*="background:#BDD0DC"],
+    div[style*="background: #BDD0DC"] {
+      background: #FAF7F2 !important;
+      border-radius: 7px !important;
+      border: 1px solid #E2D8C8 !important;
+    }
+
+    /* ── 主導覽 Tab buttons ── */
+    #root > div > div:first-of-type button {
+      transition: var(--transition) !important;
+      font-weight: 500 !important;
+      letter-spacing: .6px !important;
+    }
+    #root > div > div:first-of-type button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 12px rgba(0,0,0,.2);
+    }
+
+    /* ── 首頁 homeTab Segmented Control ── */
+    div[style*="background: rgb(253, 250, 245)"][style*="border-radius: 12px"],
+    div[style*="background:#FDFAF5"][style*="border-radius:12px"] {
+      background: var(--warm-white) !important;
+      border-radius: 12px !important;
+      padding: 5px !important;
+      box-shadow: inset 0 1px 4px rgba(31,26,18,.07), var(--shadow-card) !important;
+    }
+
+    /* ── 主要 Action buttons ── */
+    button[style*="background: rgb(31, 42, 68)"],
+    button[style*="background:#1F2A44"],
+    button[style*="background: #1F2A44"] {
+      background: linear-gradient(135deg, var(--ink-mid) 0%, var(--ink-deep) 100%) !important;
+      border-radius: 10px !important;
+      box-shadow: 0 2px 8px rgba(31,42,68,.3) !important;
+      transition: var(--transition) !important;
+      letter-spacing: .3px !important;
+    }
+    button[style*="background: rgb(31, 42, 68)"]:hover,
+    button[style*="background:#1F2A44"]:hover,
+    button[style*="background: #1F2A44"]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(31,42,68,.4) !important;
+    }
+
+    /* ── 小型 action 按鈕 D4DCE8 ── */
+    button[style*="background: rgb(212, 220, 232)"],
+    button[style*="background: #D4DCE8"],
+    button[style*="background:#D4DCE8"] {
+      background: #E8EDF5 !important;
+      border-radius: 7px !important;
+      border: 1px solid #C8D4E4 !important;
+      transition: var(--transition) !important;
+    }
+    button[style*="background: rgb(212, 220, 232)"]:hover,
+    button[style*="background: #D4DCE8"]:hover {
+      background: #D4DCE8 !important;
+    }
+
+    /* ── Input fields ── */
+    input[style*="background: rgb(253, 250, 245)"],
+    input[style*="background:#FDFAF5"],
+    input[style*="background: #FDFAF5"],
+    textarea[style*="background: rgb(253, 250, 245)"],
+    textarea[style*="background:#FDFAF5"],
+    textarea[style*="background: #FDFAF5"] {
+      background: var(--warm-white) !important;
+      border: 1.5px solid var(--warm-border) !important;
+      border-radius: 10px !important;
+      box-shadow: inset 0 1px 3px rgba(31,26,18,.04) !important;
+      transition: border-color .2s, box-shadow .2s !important;
+      font-size: 15px !important;
+      color: var(--text-main) !important;
+    }
+    input[style*="background: rgb(253, 250, 245)"]:focus,
+    input[style*="background:#FDFAF5"]:focus,
+    input[style*="background: #FDFAF5"]:focus,
+    textarea[style*="background: rgb(253, 250, 245)"]:focus,
+    textarea[style*="background:#FDFAF5"]:focus {
+      border-color: var(--gold) !important;
+      box-shadow: inset 0 1px 3px rgba(31,26,18,.04), 0 0 0 3px rgba(198,167,94,.12) !important;
+      outline: none !important;
+    }
+
+    /* ── Select dropdown ── */
+    select {
+      background: var(--warm-white) !important;
+      border: 1.5px solid var(--warm-border) !important;
+      border-radius: 10px !important;
+      transition: var(--transition) !important;
+    }
+    select:focus {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 0 3px rgba(198,167,94,.12) !important;
+      outline: none !important;
+    }
+
+    /* ── Modal overlay 精緻化 ── */
+    div[style*="position: fixed"][style*="background: rgba(0, 0, 0, 0.5)"],
+    div[style*="position: fixed"][style*="background: rgba(0,0,0,.5)"] {
+      background: rgba(20,16,10,.55) !important;
+      backdrop-filter: blur(4px) !important;
+      -webkit-backdrop-filter: blur(4px) !important;
+    }
+
+    /* ── 進度條容器 ── */
+    div[style*="height: 5px"][style*="border-radius: 99px"],
+    div[style*="height: 6px"][style*="border-radius: 99px"],
+    div[style*="height: 4px"][style*="border-radius: 99px"] {
+      border-radius: 99px !important;
+      overflow: hidden !important;
+      background: var(--warm-dark) !important;
+    }
+
+    /* ── Toast 提示 ── */
+    div[style*="position: fixed"][style*="border-radius: 24px"] {
+      border-radius: 30px !important;
+      padding: 10px 22px !important;
+      font-size: 14px !important;
+      letter-spacing: .3px !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25) !important;
+    }
+
+
+    /* ── 週曆 上下午分隔線（12:00 列上緣加深）── */
+    /* 每欄的 gridRow:5 即 12:00，加一條細線視覺分隔 */
+    div[style*="gridRow: 5"][style*="border-radius: 8px"],
+    div[style*="grid-row: 5"][style*="border-radius: 8px"] {
+      border-top: 1.5px solid rgba(198,167,94,.25) !important;
+    }
+
+    /* 週末格統一圓角與平日一致 */
+    div[style*="background: rgb(236, 234, 228)"],
+    div[style*="background: rgb(232, 228, 220)"] {
+      border-radius: 8px !important;
+    }
+
+    /* ── 週曆日期格 ── */
+    div[style*="min-height: 110px"],
+    div[style*="minHeight: 110"] {
+      border-radius: 10px !important;
+      transition: background .15s !important;
+    }
+
+    /* ── Pill 標籤 ── */
+    span[style*="border-radius: 99px"] {
+      letter-spacing: .3px !important;
+    }
+
+    /* ── 分隔線 ── */
+    div[style*="height: 1px"][style*="background: #E8E2D2"],
+    div[style*="height: 1px"][style*="background: #D8E0E8"],
+    div[style*="height: 1px"][style*="background: #E8E4DC"] {
+      opacity: .7 !important;
+    }
+
+    /* ── 翻頁導覽按鈕 ── */
+    button[style*="border: 1.5px solid #DDD5C4"] {
+      background: var(--warm-white) !important;
+      border-color: var(--warm-border) !important;
+      border-radius: 9px !important;
+      transition: var(--transition) !important;
+    }
+    button[style*="border: 1.5px solid #DDD5C4"]:hover {
+      background: var(--warm-dark) !important;
+      transform: translateY(-1px);
+    }
+
+    /* ── 同步狀態指示器 ── */
+    div[style*="background: rgb(31, 42, 68)"][style*="border-radius: 20px"] {
+      background: linear-gradient(135deg, var(--ink-mid) 0%, var(--ink-deep) 100%) !important;
+      box-shadow: 0 2px 12px rgba(31,42,68,.35) !important;
+    }
+
+    /* ── 任務卡片 container 微間距 ── */
+    div[style*="marginBottom: 4"][style*="background: rgb(253, 250, 245)"],
+    div[style*="margin-bottom: 4px"][style*="background: #FDFAF5"] {
+      margin-bottom: 6px !important;
+    }
+
+    /* ── 空狀態文字 ── */
+    div[style*="color: rgb(204, 204, 204)"][style*="font-size: 14px"] {
+      color: var(--text-light) !important;
+      font-style: italic;
+      letter-spacing: .3px;
+    }
+
+    /* ── 標題文字升級 (section headers) ── */
+    span[style*="letter-spacing: 1.5px"][style*="text-transform: uppercase"] {
+      letter-spacing: 2px !important;
+      font-weight: 800 !important;
+    }
+
+    /* ── 月份標題 ── */
+    div[style*="font-size: 15px"][style*="font-weight: 700"],
+    div[style*="font-size: 16px"][style*="font-weight: 700"] {
+      letter-spacing: .3px !important;
+    }
+
+    /* ── 卡片內按壓效果 ── */
+    button:active {
+      transform: scale(.97) !important;
+      opacity: .9 !important;
+    }
+
+    /* ── Header 副標題金色 ── */
+    div[style*="color: rgb(198, 167, 94)"][style*="letter-spacing: 3px"] {
+      font-family: 'Cormorant Garamond', 'Raleway', serif !important;
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: 4px !important;
+      font-size: 13px !important;
+    }
+
+    /* ── DAILY LOOM · TRISTA 標題 ── */
+    div[style*="letter-spacing: 6px"][style*="text-transform: uppercase"] {
+      letter-spacing: 8px !important;
+      font-size: 17px !important;
+    }
+
+    /* ── Scrollbar 美化 ── */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--warm-dark); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    /* ── Focus-visible ring ── */
+    button:focus-visible {
+      outline: 2px solid var(--gold) !important;
+      outline-offset: 2px !important;
+    }
+  </style>
+
+  <!-- ═══════════════════════════════════════════
+       色彩系統全面升級 v2 — 暖調灰 + 任務三色
+  ═══════════════════════════════════════════ -->
+  <style>
+    /* ── 文字三層：冷灰全換暖調灰 ── */
+    [style*="color: rgb(85, 85, 85)"]   { color: #3A3028 !important; }
+    [style*="color: rgb(102, 102, 102)"]{ color: #4A3E32 !important; }
+    [style*="color: rgb(136, 136, 136)"]{ color: #6B5F4A !important; }
+    [style*="color: rgb(153, 153, 153)"]{ color: #7A6E5C !important; }
+    [style*="color: rgb(170, 170, 170)"]{ color: #96897A !important; }
+    [style*="color: rgb(187, 187, 187)"]{ color: #A89E90 !important; }
+    [style*="color: rgb(204, 204, 204)"]{ color: #BEB5A8 !important; }
+    [style*="color: rgb(221, 221, 221)"]{ color: #C8BFB2 !important; }
+    [style*="color: rgb(51, 51, 51)"]   { color: #2C2518 !important; }
+
+    /* ── 翻譯 → 深藍石（清晰藍）── */
+    [style*="color: rgb(42, 58, 84)"]   { color: #324A6A !important; }
+    [style*="background: rgb(232, 226, 210)"] { background: #E6EAEF !important; }
+
+    /* ── 備課 → 赤陶棕（更暖）── */
+    [style*="color: rgb(107, 101, 88)"] { color: #7A6251 !important; }
+    [style*="background: rgb(232, 224, 204)"] { background: #EAE0CC !important; }
+
+    /* ── 其他/教學 → 森綠（色相明顯移開）── */
+    [style*="color: rgb(74, 90, 112)"]  { color: #3D6460 !important; }
+    [style*="background: rgb(232, 228, 220)"] { background: #DFF0EC !important; }
+
+    /* ── Todo 亮紫 → 暖棕 ── */
+    [style*="color: rgb(139, 92, 246)"] { color: #7A6251 !important; }
+    [style*="background: rgb(237, 233, 254)"] { background: #EDE5D8 !important; }
+
+    /* ── 已付清綠 → 統一深森綠 ── */
+    [style*="color: rgb(74, 106, 74)"]  { color: #3D6460 !important; }
+    [style*="color: rgb(90, 122, 90)"]  { color: #3D6460 !important; }
+    [style*="color: rgb(90, 138, 114)"] { color: #3D6460 !important; }
+    [style*="background: rgb(224, 234, 224)"] { background: #DFF0EC !important; }
+    [style*="background: rgb(216, 232, 216)"] { background: #DFF0EC !important; }
+    [style*="background: rgb(221, 232, 226)"] { background: #DFF0EC !important; }
+
+    /* ── 中性背景換暖白 ── */
+    [style*="background: rgb(240, 240, 240)"] { background: #F0EBE0 !important; }
+    [style*="background: rgb(245, 245, 245)"] { background: #F3EEE5 !important; }
+    [style*="background: rgb(248, 248, 248)"] { background: #F5F0E8 !important; }
+    [style*="background: rgb(248, 245, 240)"] { background: #F5F0E8 !important; }
+
+    /* ── 翻譯作品卡特殊色 ── */
+    [style*="background: rgb(240, 234, 224)"] { background: #EDE5D4 !important; }
+    [style*="background: rgb(238, 244, 251)"] { background: #E8EFF8 !important; }
+    [style*="background: rgb(253, 240, 242)"] { background: #FAF0F0 !important; }
+    [style*="background: rgb(237, 232, 224)"] { background: #EAE3D6 !important; }
+    [style*="background: rgb(232, 224, 212)"] { background: #E5DDD0 !important; }
+    [style*="background: rgb(238, 236, 234)"] { background: #ECE8E0 !important; }
+    [style*="background: rgb(237, 224, 207)"] { background: #F2EDE4 !important; border-radius: 10px !important; box-shadow: 0 2px 12px rgba(31,26,18,.08), 0 1px 3px rgba(31,26,18,.05) !important; border: 1px solid #E2D8C8 !important; }
+    [style*="background: rgb(237, 232, 220)"] { background: #EDE8D8 !important; }
+
+    /* ── 特殊文字色 ── */
+    [style*="color: rgb(122, 155, 181)"] { color: #4A6E8A !important; }
+    [style*="color: rgb(192, 128, 144)"] { color: #9A6472 !important; }
+    [style*="color: rgb(154, 107, 90)"]  { color: #8A6050 !important; }
+    [style*="color: rgb(107, 96, 80)"]   { color: #6B5F4A !important; }
+    [style*="color: rgb(140, 136, 128)"] { color: #8A8070 !important; }
+    [style*="color: rgb(168, 144, 96)"]  { color: #B09560 !important; }
+    [style*="color: rgb(154, 128, 112)"] { color: #8A7060 !important; }
+    [style*="color: rgb(198, 184, 154)"] { color: #C0AD8A !important; }
+    [style*="color: rgb(74, 55, 40)"]    { color: #3E2E20 !important; }
+
+    /* ── 邊框換暖調 ── */
+    [style*="border"][style*="rgb(224, 224, 224)"] { border-color: #D8D0C4 !important; }
+    [style*="border"][style*="rgb(221, 221, 221)"] { border-color: #DDD5C4 !important; }
+    [style*="border"][style*="rgb(238, 238, 238)"] { border-color: #E8DFD0 !important; }
+
+    /* ── Todo border 紫 → 暖棕 ── */
+    [style*="border"][style*="rgb(139, 92, 246)"] { border-color: #7A6251 !important; }
+  </style>
+
+  <script>
+  /* ── Runtime 色彩修補：覆蓋 JS inline 寫死的色值 ── */
+  (function patchColors() {
+    const MAP = {
+      /* 文字：冷灰 → 暖調灰 */
+      '#555':     '#3A3028', '#555555': '#3A3028',
+      '#666':     '#4A3E32',
+      '#888':     '#6B5F4A', '#888888': '#6B5F4A',
+      '#999':     '#7A6E5C', '#999999': '#7A6E5C',
+      '#aaa':     '#96897A', '#aaaaaa': '#96897A',
+      '#bbb':     '#A89E90', '#bbbbbb': '#A89E90',
+      '#ccc':     '#BEB5A8', '#cccccc': '#BEB5A8',
+      '#ddd':     '#C8BFB2', '#dddddd': '#C8BFB2',
+      '#333':     '#2C2518', '#333333': '#2C2518',
+      /* 任務類型 */
+      '#2A3A54':  '#324A6A',
+      '#E8E2D2':  '#E6EAEF',
+      '#6B6558':  '#7A6251',
+      '#E8E0CC':  '#EAE0CC',
+      '#4A5A70':  '#3D6460',
+      '#E8E4DC':  '#DFF0EC',
+      /* Todo 紫 → 暖棕 */
+      '#8B5CF6':  '#7A6251',
+      '#EDE9FE':  '#EDE5D8',
+      /* 已付清綠 → 森綠 */
+      '#4A6A4A':  '#3D6460',
+      '#5A7A5A':  '#3D6460',
+      '#5A8A72':  '#3D6460',
+      '#E0EAE0':  '#DFF0EC',
+      '#D8E8D8':  '#DFF0EC',
+      '#DDE8E2':  '#DFF0EC',
+      /* 中性背景 → 暖白 */
+      '#f0f0f0':  '#F0EBE0', '#F0EAE0': '#EDE5D4',
+      '#f5f5f5':  '#F3EEE5',
+      '#f8f8f8':  '#F5F0E8', '#f8f5f0': '#F5F0E8',
+      /* 翻譯作品 */
+      '#EEF4FB':  '#E8EFF8',
+      '#FDF0F2':  '#FAF0F0',
+      '#EDE8E0':  '#EAE3D6',
+      '#E8E0D4':  '#E5DDD0',
+      '#7A9BB5':  '#4A6E8A',
+      '#C08090':  '#9A6472',
+      '#EDE0CF':  '#EDE0CC',
+      '#EDE8DC':  '#EDE8D8',
+      '#EEECEA':  '#ECE8E0',
+      /* 特殊文字 */
+      '#9A6B5A':  '#8A6050',
+      '#EDE0D8':  '#EDE0D4',
+      '#6B6050':  '#6B5F4A',
+      '#8C8880':  '#8A8070',
+      '#A89060':  '#B09560',
+      '#9A8070':  '#8A7060',
+      '#C6B89A':  '#C0AD8A',
+      '#4A3728':  '#3E2E20',
+    };
+
+    const BORDER_MAP = {
+      '#e0e0e0': '#D8D0C4',
+      '#ddd':    '#DDD5C4',
+      '#eee':    '#E8DFD0',
+    };
+
+    function patch(el) {
+      const s = el.style;
+      if (!s) return;
+
+      /* color */
+      const c = s.color;
+      if (c && MAP[c.toLowerCase()]) s.color = MAP[c.toLowerCase()];
+
+      /* background / backgroundColor */
+      const bg = s.backgroundColor || s.background;
+      if (bg) {
+        const bgLow = bg.toLowerCase().replace(/\s/g,'');
+        for (const [k, v] of Object.entries(MAP)) {
+          if (bgLow.startsWith(k.toLowerCase())) {
+            if (s.backgroundColor) s.backgroundColor = v;
+            else s.background = v;
+            break;
+          }
+        }
+      }
+
+      /* border-color */
+      const bc = s.borderColor || s.borderTopColor || s.borderBottomColor;
+      if (bc) {
+        for (const [k, v] of Object.entries(BORDER_MAP)) {
+          if (bc.toLowerCase().includes(k)) {
+            s.borderColor = v; break;
+          }
+        }
+      }
+    }
+
+    function patchAll() {
+      document.querySelectorAll('[style]').forEach(patch);
+    }
+
+    /* 初次執行 */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', patchAll);
+    } else {
+      patchAll();
+    }
+
+    /* 監聽 React re-render */
+    const obs = new MutationObserver(muts => {
+      for (const m of muts) {
+        if (m.type === 'attributes' && m.attributeName === 'style') {
+          patch(m.target);
+        } else {
+          m.addedNodes.forEach(n => {
+            if (n.nodeType === 1) {
+              patch(n);
+              n.querySelectorAll && n.querySelectorAll('[style]').forEach(patch);
+            }
+          });
+        }
+      }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      obs.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['style']
+      });
+    });
+  })();
+  </script>
+
   <!-- Google Identity Services for Tasks API -->
   <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
@@ -4308,7 +4883,7 @@ function WeekView({
     style: {
       textAlign: "center",
       padding: "5px 2px",
-      background: dt === TODAY_STR ? "#1F2A44" : i >= 5 ? "#E8E7E4" : "#FDFAF5",
+      background: dt === TODAY_STR ? "#1F2A44" : i >= 5 ? "#E6E2D8" : "#FDFAF5",
       borderRadius: 6
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -4321,7 +4896,7 @@ function WeekView({
     style: {
       fontSize: 12,
       fontWeight: 700,
-      color: dt === TODAY_STR ? "#F0EAE0" : i >= 5 ? "#888" : "#1F2A44",
+      color: dt === TODAY_STR ? "#F0EAE0" : i >= 5 ? "#A89E90" : "#1F2A44",
       lineHeight: 1.3
     }
   }, dt))), /*#__PURE__*/React.createElement("div", null)), /*#__PURE__*/React.createElement("div", {
@@ -4340,7 +4915,8 @@ function WeekView({
     key: hr,
     style: {
       fontSize: 11,
-      color: "#ccc",
+      color: "#C0B8A8",
+      fontWeight: 400,
       textAlign: "right",
       paddingRight: 2,
       paddingTop: 3,
@@ -4388,11 +4964,13 @@ function WeekView({
       style: {
         gridRow: hi + 1,
         gridColumn: 1,
-        background: isWeekend ? "#EEECEA" : "#FDFAF5",
+        background: isWeekend ? "#ECEAE4" : "#FDFAF5",
         borderRadius: 3,
-        border: `0.5px solid ${isWeekend ? "#D8D6D2" : "#DDD5C4"}`,
+        border: "0.5px solid #E2D8C8",
+        borderTop: (!isWeekend && hr === "12") ? "2px solid rgba(168,144,96,.55)" : "0.5px solid #E2D8C8",
         position: "relative",
-        cursor: "pointer"
+        cursor: "pointer",
+        transition: "background .15s"
       }
     })), (personalEvents || []).filter(e => e.date === dt).map(ev => {
       const g = timeToGrid(ev.time && ev.endTime ? `${ev.time}~${ev.endTime}` : null);
@@ -7694,7 +8272,7 @@ function TransPanel({
       cursor: "pointer",
       fontFamily: "inherit"
     }
-  }, "\u7DE8\u8F2F"), /*#__PURE__*/React.createElement("button", {
+  }, "\u270E"), /*#__PURE__*/React.createElement("button", {
     onClick: onClose,
     style: {
       padding: "2px 7px",
