@@ -2338,9 +2338,13 @@ function App() {
   const deleteCourse = id => {
     const upd = courses.filter(c => c.id !== id);
     const tupd = tasks.filter(t => t.courseId !== id);
+    // 刪除課程時，同步清掉行事曆裡關聯的事件
+    const deletedTaskIds = new Set(tasks.filter(t => t.courseId === id).map(t => t.id));
+    const calUpd = calEvents.filter(e => !deletedTaskIds.has(e.taskId));
     setCourses(upd);
     setTasks(tupd);
-    persist(upd, tupd, freeTasks, calEvents, nextId);
+    setCalEvents(calUpd);
+    persist(upd, tupd, freeTasks, calUpd, nextId);
     setCourseModal(null);
     toast2("已刪除", "err");
   };
@@ -2634,16 +2638,21 @@ function App() {
     if (id?.startsWith("task_")) {
       const rawId = id.replace("task_", "");
       const tupd = tasks.filter(t => t.id !== rawId);
+      // 同步清掉行事曆關聯事件
+      const calUpd = calEvents.filter(e => e.taskId !== rawId);
       setTasks(tupd);
-      persist(courses, tupd, freeTasks, calEvents, nextId);
+      setCalEvents(calUpd);
+      persist(courses, tupd, freeTasks, calUpd, nextId);
     } else {
       const upd = translates.filter(t => t.id !== id);
       setTranslates(upd);
-      //  tasks  tw 
       const tId = `tw${id.replace("tr", "")}`;
       const tupd = tasks.filter(t => t.id !== tId);
+      // 同步清掉行事曆關聯事件
+      const calUpd = calEvents.filter(e => e.taskId !== tId);
       setTasks(tupd);
-      persist(courses, tupd, freeTasks, calEvents, nextId);
+      setCalEvents(calUpd);
+      persist(courses, tupd, freeTasks, calUpd, nextId);
     }
     toast2("已刪除", "err");
   };
