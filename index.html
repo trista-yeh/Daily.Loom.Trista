@@ -14,7 +14,7 @@
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#EDE5D4; }
+    body { background:#EDE5D4; font-family: "PingFang TC", "蘋方-繁", "Hiragino Sans CNS", "Microsoft JhengHei", sans-serif; }
     /* 防止 iOS 長按選取文字 */
     body { -webkit-user-select:none; user-select:none; }
     /* 防止 iOS 點擊高亮 */
@@ -475,14 +475,14 @@ const {
   useCallback
 } = React;
 const CAT_COLOR = {
-  gov: "#1F2A44",
-  local: "#8B5E3C",
-  other: "#4A6080"
+  gov: "#6B6050",
+  local: "#6B6050",
+  other: "#6B6050"
 };
 const CAT_BG = {
   gov: "#DDD5C4",
-  local: "#EDD9C4",
-  other: "#D5DFF0"
+  local: "#D4CBBE",
+  other: "#CAC3B8"
 };
 const CAT_LABEL = {
   gov: "市政府",
@@ -495,8 +495,8 @@ const TODAY_STR = `${TODAY.getMonth() + 1}/${TODAY.getDate()}`;
 const ROUTINE = {
   sport: {
     label: "運動",
-    color: "#4A6080",
-    bg: "#D5DFF0"
+    color: "#4A5A70",
+    bg: "#E8E4DC"
   },
   koto: {
     label: "古箏",
@@ -2369,7 +2369,7 @@ function App() {
       feeDate: taskForm.feeDate || "",
       feePaid: false,
       color: taskForm.type === "translate" ? "#2A3A54" : "#6B6558",
-      bg: taskForm.type === "translate" ? "#E8E2D2" : taskForm.type === "other" ? "#D5DFF0" : "#E8E0CC"
+      bg: taskForm.type === "translate" ? "#E8E2D2" : taskForm.type === "other" ? "#E8E4DC" : "#E8E0CC"
     };
     const upd = [...tasks, t],
       nid = nextId + 1;
@@ -2715,7 +2715,7 @@ function App() {
   };
 
   //  Personal Events 
-  const PERSONAL_COLORS = ["#7A6251", "#4A6080", "#6B6558", "#8B5E7A", "#5E7A6B", "#7A7A5E"];
+  const PERSONAL_COLORS = ["#7A6251", "#4A5A70", "#6B6558", "#8B5E7A", "#5E7A6B", "#7A7A5E"];
   const addPersonalEvent = ev => {
     const upd = [...personalEvents, {
       ...ev,
@@ -2889,7 +2889,7 @@ function App() {
       fontWeight: 600,
       letterSpacing: ".3px",
       background: homeTab === k ? "#1F2A44" : "transparent",
-      color: homeTab === k ? "#F0EAE0" : "#8A9BB5",
+      color: homeTab === k ? "#F0EAE0" : "#888",
       fontFamily: "inherit",
       transition: "background .2s,color .2s"
     }
@@ -2925,7 +2925,7 @@ function App() {
     }, "\u27D0 \u7FFB\u8B6F"), /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 12,
-        color: "#8A9BB5"
+        color: "#A89060"
       }
     }, items.length, " \u4EF6"), /*#__PURE__*/React.createElement("div", {
       style: {
@@ -2975,7 +2975,7 @@ function App() {
     }, "\u229E \u5099\u8AB2"), /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 12,
-        color: "#8A9BB5"
+        color: "#A89060"
       }
     }, items.length, " \u4EF6"), /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3019,19 +3019,19 @@ function App() {
         fontSize: 12,
         fontWeight: 700,
         letterSpacing: "1.5px",
-        color: "#4A6080",
+        color: "#4A5A70",
         textTransform: "uppercase"
       }
     }, "\u25CE \u5176\u4ED6"), /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 12,
-        color: "#8A9BB5"
+        color: "#A89060"
       }
     }, items.length, " \u4EF6"), /*#__PURE__*/React.createElement("div", {
       style: {
         flex: 1,
         height: "1px",
-        background: "#D5DFF0"
+        background: "#E8E4DC"
       }
     })), items.map(t => /*#__PURE__*/React.createElement(MiniGanttRow, {
       key: t.id,
@@ -4011,7 +4011,7 @@ function App() {
       borderRadius: 7,
       border: "1px solid #DDD5C4",
       background: "none",
-      color: "#8A9BB5",
+      color: "#A89060",
       cursor: "pointer",
       fontFamily: "inherit"
     }
@@ -4064,9 +4064,9 @@ function App() {
       padding: "6px",
       borderRadius: 7,
       border: "1.5px solid",
-      borderColor: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A6080" : "#6B6558" : "#e0e0e0",
-      background: taskForm.type === k ? k === "translate" ? "#E8E2D2" : k === "other" ? "#D5DFF0" : "#E8E0CC" : "#fff",
-      color: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A6080" : "#6B6558" : "#888",
+      borderColor: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A5A70" : "#6B6558" : "#e0e0e0",
+      background: taskForm.type === k ? k === "translate" ? "#E8E2D2" : k === "other" ? "#E8E4DC" : "#E8E0CC" : "#fff",
+      color: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A5A70" : "#6B6558" : "#888",
       fontSize: 14,
       fontWeight: 600,
       cursor: "pointer",
@@ -4193,16 +4193,16 @@ function WeekView({
     note: ""
   });
   const PCOLORS = [{
-    c: "#B87A7A",
-    bg: "#F0E6E6",
+    c: "#9A6B5A",
+    bg: "#EDE0D8",
     label: "玫磚紅"
   }, {
     c: "#A89060",
     bg: "#EDE8DC",
     label: "麥穗黃"
   }, {
-    c: "#2A4038",
-    bg: "#D4E5DF",
+    c: "#5A8A72",
+    bg: "#DDE8E2",
     label: "苔蘚綠"
   }, {
     c: "#888888",
@@ -4216,7 +4216,7 @@ function WeekView({
       title: "",
       time: hStr,
       endTime: eStr,
-      color: "#B87A7A",
+      color: "#9A6B5A",
       note: ""
     });
     setPModal({
@@ -4229,7 +4229,7 @@ function WeekView({
       title: ev.title,
       time: ev.time || "",
       endTime: ev.endTime || "",
-      color: ev.color || "#B87A7A",
+      color: ev.color || "#9A6B5A",
       note: ev.note || ""
     });
     setPModal({
@@ -4420,7 +4420,7 @@ function WeekView({
         }, /*#__PURE__*/React.createElement("div", {
           style: {
             fontSize: 11,
-            color: "#2A4038",
+            color: "#2A3A54",
             fontWeight: 400,
             lineHeight: 1.3,
             overflow: "hidden",
@@ -4465,7 +4465,7 @@ function WeekView({
       }
     }), [...transDeadlines, ...transPaid].map((t, idx) => {
       const isPaid = transPaid.includes(t);
-      const bg = isPaid ? "#E5DDD4" : "#EDE0CF";
+      const bg = isPaid ? "#DDE4EC" : "#D8E0E8";
       const shortName = t.name.replace(/^\[.*?\]\s*/, "");
       const label = isPaid ? "◈" : "⟐";
       return /*#__PURE__*/React.createElement("div", {
@@ -4516,7 +4516,7 @@ function WeekView({
         style: {
           gridRow: `${g.rowStart} / span ${clamp}`,
           gridColumn: 1,
-          background: "#D4DDE8",
+          background: "#E8E0CC",
           borderRadius: 4,
           padding: "3px 4px",
           cursor: "pointer",
@@ -4754,15 +4754,10 @@ function WeekView({
       background: p.bg,
       border: `2px solid ${pForm.color === p.c ? p.c : "transparent"}`,
       cursor: "pointer",
-      textAlign: "center"
+      textAlign: "center",
+      height: 28
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: p.c,
-      fontWeight: 600
-    }
-  }, p.label))))), /*#__PURE__*/React.createElement("div", {
+  }, null))))  , /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 12
     }
@@ -4971,17 +4966,17 @@ function MonthView({
         padding: "3px 1px",
         borderRadius: 4,
         cursor: ts.length ? "pointer" : "default",
-        background: ds === TODAY_STR ? "#1F2A44" : ts.length ? "#D4DDE8" : isWeekend ? "#f8f5f0" : "transparent"
+        background: ds === TODAY_STR ? "#1F2A44" : ts.length ? "#E8E0CC" : isWeekend ? "#f8f5f0" : "transparent"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 12,
-        color: ds === TODAY_STR ? "#8A9BB5" : ts.length ? "#4E5E5C" : isWeekend ? "#bbb" : "#555"
+        color: ds === TODAY_STR ? "#A89060" : isWeekend ? "#bbb" : "#555"
       }
     }, day), ts.length > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 9,
-        color: "#7A9290"
+        color: "#A89060"
       }
     }, "•".repeat(Math.min(ts.length, 3))));
   }))), /*#__PURE__*/React.createElement("div", {
@@ -5020,7 +5015,7 @@ function MonthView({
     }
   }, hrs, "h"))), /*#__PURE__*/React.createElement("div", {
     style: {
-      background: "#EBEBEA",
+      background: "#EDE5D4",
       borderRadius: 6,
       padding: "5px 8px",
       display: "flex",
@@ -5032,13 +5027,13 @@ function MonthView({
   }, /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 11,
-      color: "#7B7B78"
+      color: "#999999"
     }
   }, "\u5408\u8A08"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 13,
       fontWeight: 700,
-      color: "#444441"
+      color: "#1F2A44"
     }
   }, stat.total, "h"))), mc.map(c => /*#__PURE__*/React.createElement("div", {
     key: c.id
@@ -5122,7 +5117,7 @@ function TodosView({
       gap: 6,
       marginBottom: 8
     }
-  }, [["備課待辦", pending.length, "#4E5E5C", "#D4DDE8"], ["一般待辦", fpend.length, "#4A6080", "#D5DFF0"], ["已完成", done.length + fdone.length, "#6B6558", "#E8E0CC"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
+  }, [["備課待辦", pending.length, "#6B6050", "#E8E0CC"], ["一般待辦", fpend.length, "#4A5A70", "#E8E4DC"], ["已完成", done.length + fdone.length, "#6B6558", "#E8E0CC"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
     key: l,
     style: {
       flex: 1,
@@ -5153,7 +5148,7 @@ function TodosView({
     style: {
       fontSize: 13,
       fontWeight: 700,
-      color: "#4A6080",
+      color: "#4A5A70",
       marginBottom: 5
     }
   }, "\u4E00\u822C\u5F85\u8FA6"), fpend.map(t => /*#__PURE__*/React.createElement("div", {
@@ -5176,11 +5171,11 @@ function TodosView({
   }, t.text), (t.progress || 0) > 0 && /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 11,
-      color: "#4A6080"
+      color: "#4A5A70"
     }
   }, t.progress, "/10"), /*#__PURE__*/React.createElement("button", {
     onClick: () => onLogFree(t),
-    style: btnS("#4A6080", "#D5DFF0", {
+    style: btnS("#4A5A70", "#E8E4DC", {
       fontSize: 11,
       padding: "2px 6px"
     })
@@ -5205,7 +5200,7 @@ function TodosView({
     style: {
       fontSize: 13,
       fontWeight: 700,
-      color: "#4E5E5C",
+      color: "#6B6050",
       marginBottom: 5
     }
   }, "\u5099\u8AB2\u5F85\u8FA6"), pending.map(t => /*#__PURE__*/React.createElement("div", {
@@ -5396,7 +5391,7 @@ function LogModal({
   })), t.deadline && /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 11,
-      color: daysUntil(t.deadline) <= 3 ? "#c0392b" : daysUntil(t.deadline) <= 7 ? "#e67e22" : "#888",
+      color: daysUntil(t.deadline) <= 3 ? "#c0392b" : daysUntil(t.deadline) <= 7 ? "#bf5600" : "#888",
       marginTop: 1
     }
   }, "\u622A\u6B62 ", t.deadline, "\u30FB", daysUntil(t.deadline) > 0 ? `${daysUntil(t.deadline)}天` : "今天")))), /*#__PURE__*/React.createElement("div", {
@@ -5433,7 +5428,7 @@ function LogModal({
   }, u)), rem === 0 && /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 13,
-      color: "#2d6a4f",
+      color: "#2A3A54",
       padding: "7px 0"
     }
   }, "\u2713 \u5DF2\u5B8C\u6210"))), /*#__PURE__*/React.createElement("div", {
@@ -6090,7 +6085,7 @@ function FinanceView({
       display: "flex",
       gap: 5
     }
-  }, [["合計", totalAmt, "#F0EAE0", "#2A3A54"], ["已入帳", paidAmt, "#C6D8C6", "#2A4038"], ["待入帳", totalAmt - paidAmt, "#E8DABB", "#4A3728"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
+  }, [["合計", totalAmt, "#F0EAE0", "#2A3A54"], ["已入帳", paidAmt, "#C6D8C6", "#2A3A54"], ["待入帳", totalAmt - paidAmt, "#E8DABB", "#4A3728"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
     key: l,
     style: {
       flex: 1,
@@ -6284,13 +6279,13 @@ function TransView({
     };
     if (diff <= 7) return {
       label: `${diff}天後`,
-      color: "#e67e22",
+      color: "#bf5600",
       bg: "#E8DABB"
     };
     return {
       label: `${diff}天後`,
-      color: "#2d6a4f",
-      bg: "#D5DFF0"
+      color: "#2A3A54",
+      bg: "#E8E4DC"
     };
   };
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
@@ -6369,7 +6364,7 @@ function TransView({
       style: {
         fontSize: 11,
         fontWeight: 600,
-        color: "#B8A898",
+        color: "#888888",
         letterSpacing: "1px",
         textTransform: "uppercase"
       }
@@ -6411,7 +6406,7 @@ function TransView({
       }, t.publisher && /*#__PURE__*/React.createElement("div", {
         style: {
           fontSize: 11,
-          color: "#B8A898",
+          color: "#888888",
           fontWeight: 400,
           marginBottom: 3,
           letterSpacing: ".3px"
@@ -6420,7 +6415,7 @@ function TransView({
         style: {
           fontSize: 13,
           fontWeight: 400,
-          color: "#2A2A2A",
+          color: "#1F2A44",
           lineHeight: 1.4
         }
       }, t.title)), dl && /*#__PURE__*/React.createElement("span", {
@@ -6449,7 +6444,7 @@ function TransView({
       }, "\u622A\u7A3F ", t.deadline), t.fee && /*#__PURE__*/React.createElement("span", {
         style: {
           fontSize: 11,
-          color: "#8A9BB5"
+          color: "#A89060"
         }
       }, t.fee), t.feeDate && /*#__PURE__*/React.createElement("span", {
         style: {
@@ -6625,7 +6620,7 @@ function TransView({
           alignItems: "center",
           justifyContent: "center",
           fontSize: 14,
-          color: "#D4C8B8",
+          color: "#C6B89A",
           cursor: "pointer"
         }
       }, t.cover ? /*#__PURE__*/React.createElement("img", {
@@ -6686,7 +6681,7 @@ function TransView({
         style: {
           fontSize: 12,
           fontWeight: 400,
-          color: "#2A2A2A",
+          color: "#1F2A44",
           lineHeight: 1.3,
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -6695,7 +6690,7 @@ function TransView({
       }, t.title), t.note && !t.note.includes("共譯") && /*#__PURE__*/React.createElement("div", {
         style: {
           fontSize: 11,
-          color: "#C0B8B0",
+          color: "#999999",
           marginTop: 2,
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -6713,7 +6708,7 @@ function TransView({
       }, /*#__PURE__*/React.createElement("span", {
         style: {
           fontSize: 11,
-          color: "#C0B8B0",
+          color: "#999999",
           fontWeight: 400
         }
       }, t.pubDate || "—"), /*#__PURE__*/React.createElement("div", {
@@ -6766,7 +6761,7 @@ function TransView({
       style: {
         fontSize: 11,
         fontWeight: 600,
-        color: "#C0A888",
+        color: "#C6A75E",
         letterSpacing: "1px"
       }
     }, "\u25CC \u5F85\u51FA\u7248"), /*#__PURE__*/React.createElement("span", {
@@ -6802,7 +6797,7 @@ function TransView({
       style: {
         fontSize: 11,
         fontWeight: 600,
-        color: "#8A9BB5",
+        color: "#A89060",
         letterSpacing: "1px"
       }
     }, "\u2726 \u5DF2\u51FA\u7248"), /*#__PURE__*/React.createElement("span", {
@@ -6814,7 +6809,7 @@ function TransView({
       style: {
         flex: 1,
         height: "1px",
-        background: "#E0E8F0"
+        background: "#E8E0D4"
       }
     }), /*#__PURE__*/React.createElement("span", {
       style: {
@@ -6856,7 +6851,7 @@ function TransView({
         overflow: "hidden",
         marginBottom: 7,
         fontSize: 22,
-        color: "#D4C8B8",
+        color: "#C6B89A",
         cursor: "pointer"
       }
     }, t.cover ? /*#__PURE__*/React.createElement("img", {
@@ -6889,13 +6884,13 @@ function TransView({
       style: {
         fontSize: 12,
         fontWeight: 400,
-        color: "#2A2A2A",
+        color: "#1F2A44",
         lineHeight: 1.4
       }
     }, t.title), t.pubDate && /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 11,
-        color: "#C0B8B0",
+        color: "#999999",
         marginTop: 2
       }
     }, t.pubDate)));
@@ -6915,7 +6910,7 @@ function TransView({
       style: {
         fontSize: 11,
         fontWeight: 600,
-        color: "#C0A888",
+        color: "#C6A75E",
         letterSpacing: "1px"
       }
     }, "\u25CC \u5F85\u51FA\u7248"), /*#__PURE__*/React.createElement("div", {
@@ -6950,14 +6945,14 @@ function TransView({
       style: {
         fontSize: 11,
         fontWeight: 600,
-        color: "#8A9BB5",
+        color: "#A89060",
         letterSpacing: "1px"
       }
     }, "\u2726 \u5DF2\u51FA\u7248"), /*#__PURE__*/React.createElement("div", {
       style: {
         flex: 1,
         height: "1px",
-        background: "#E0E8F0"
+        background: "#E8E0D4"
       }
     }), /*#__PURE__*/React.createElement("span", {
       style: {
@@ -7117,7 +7112,7 @@ function DoneTaskList({
   }, icon, " ", label), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 12,
-      color: "#8A9BB5"
+      color: "#A89060"
     }
   }, count), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -7263,23 +7258,23 @@ function DoneTaskList({
   }))), doneOther.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GroupHeader, {
     icon: "\u25CE",
     label: "\u5176\u4ED6",
-    color: "#4A6080",
-    line: "#D5DFF0",
+    color: "#4A5A70",
+    line: "#E8E4DC",
     count: doneOther.length
   }), doneTasks.filter(t => t.type !== "translate" && t.type !== "teach" && t.type !== "material").map(t => /*#__PURE__*/React.createElement(TaskCard, {
     key: t.id,
     t: t,
     label: "\u5176\u4ED6",
-    tc: t.color || "#4A6080",
-    tb: t.bg || "#D5DFF0",
+    tc: t.color || "#4A5A70",
+    tb: t.bg || "#E8E4DC",
     onUndo: () => undoTask(t.id),
     onDel: () => delTask(t.id)
   })), doneFree.map(f => /*#__PURE__*/React.createElement(TaskCard, {
     key: f.id,
     t: f,
     label: "\u5F85\u8FA6",
-    tc: "#4A6080",
-    tb: "#D5DFF0",
+    tc: "#4A5A70",
+    tb: "#E8E4DC",
     onUndo: () => undoFree(f.id),
     onDel: () => delFree(f.id)
   })))));
@@ -7296,10 +7291,10 @@ function MiniGanttRow({
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const d = t.deadline ? daysUntil(t.deadline) : null;
-  const uc = d === null ? "#4A6080" : d <= 3 ? "#c0392b" : d <= 7 ? "#e67e22" : "#4E5E5C";
+  const uc = d === null ? "#4A5A70" : d <= 3 ? "#c0392b" : d <= 7 ? "#bf5600" : "#6B6050";
   const typeLabel = t.type === "translate" ? "翻譯" : t.type === "material" || t.type === "teach" ? "備課" : t.type === "other" ? "其他" : "待辦";
-  const tc = t.color || (t.type === "translate" ? "#2A3A54" : t.type === "teach" || t.type === "material" ? "#6B6558" : "#4A6080");
-  const tb = t.bg || (t.type === "translate" ? "#E8E2D2" : t.type === "teach" || t.type === "material" ? "#E8E0CC" : "#D5DFF0");
+  const tc = t.color || (t.type === "translate" ? "#2A3A54" : t.type === "teach" || t.type === "material" ? "#6B6558" : "#4A5A70");
+  const tb = t.bg || (t.type === "translate" ? "#E8E2D2" : t.type === "teach" || t.type === "material" ? "#E8E0CC" : "#E8E4DC");
   const todos = t.todos || [];
   const pendCount = todos.filter(x => !x.done).length;
   const cbtn = (label, onClick, disabled) => /*#__PURE__*/React.createElement("button", {
@@ -7359,8 +7354,8 @@ function MiniGanttRow({
       padding: "2px 7px",
       borderRadius: 5,
       border: "1px solid #DDD5C4",
-      background: open ? "#D4DDE8" : "#FDFAF5",
-      color: open ? "#4E5E5C" : "#aaa",
+      background: open ? "#E8E0CC" : "#FDFAF5",
+      color: open ? "#6B6050" : "#aaa",
       cursor: "pointer",
       fontFamily: "inherit",
       flexShrink: 0
@@ -7550,7 +7545,7 @@ function CourseMiniCard({
     style: pill(cc, cb)
   }, CAT_LABEL[c.category]), c.fee && /*#__PURE__*/React.createElement("span", {
     style: {
-      ...pill(c.feePaid ? "#1F2A44" : "#7A6251", c.feePaid ? "#D5DFF0" : "#E8DABB"),
+      ...pill(c.feePaid ? "#1F2A44" : "#7A6251", c.feePaid ? "#E8E4DC" : "#E8DABB"),
       marginLeft: "auto"
     }
   }, c.feePaid ? "✓ 已入帳" : "· 待入帳"), onEdit && /*#__PURE__*/React.createElement("button", {
@@ -7721,7 +7716,7 @@ function CoursePanel({
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      background: "#D4DDE8",
+      background: "#E8E0CC",
       border: "none",
       borderRadius: 9,
       padding: "10px",
@@ -7791,7 +7786,7 @@ function CoursePanel({
     rel: "noreferrer",
     style: {
       fontSize: 13,
-      color: "#4A6080",
+      color: "#4A5A70",
       display: "block",
       marginBottom: 3
     }
