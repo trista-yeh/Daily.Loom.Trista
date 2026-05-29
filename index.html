@@ -2981,7 +2981,7 @@ function App() {
       style: {
         flex: 1,
         height: "1px",
-        background: "#E8E0CC"
+        background: "#D8E0E8"
       }
     })), items.map(t => /*#__PURE__*/React.createElement(MiniGanttRow, {
       key: t.id,
@@ -4465,7 +4465,7 @@ function WeekView({
       }
     }), [...transDeadlines, ...transPaid].map((t, idx) => {
       const isPaid = transPaid.includes(t);
-      const bg = isPaid ? "#DDE4EC" : "#D8E0E8";
+      const bg = isPaid ? "#E8E4DC" : "#E8E0CC";
       const shortName = t.name.replace(/^\[.*?\]\s*/, "");
       const label = isPaid ? "◈" : "⟐";
       return /*#__PURE__*/React.createElement("div", {
@@ -4516,7 +4516,7 @@ function WeekView({
         style: {
           gridRow: `${g.rowStart} / span ${clamp}`,
           gridColumn: 1,
-          background: "#E8E0CC",
+          background: "#D8E0E8",
           borderRadius: 4,
           padding: "3px 4px",
           cursor: "pointer",
@@ -6205,26 +6205,26 @@ function FinanceView({
 
 //  Trans View 
 const PUB_COLOR = {
-  '維京': '#0a5ea8',
-  '台灣東方': '#2e7d32',
-  '方言文化': '#bf5600',
-  '漫遊者': '#7b1fa2',
-  '圓神': '#c62828',
-  '城邦': '#ad1457',
-  '小魯': '#00796b',
-  '聯經': '#2e7d32',
-  '小宇宙': '#bf5600',
-  '大家': '#5c35a0',
-  '上誼': '#00796b',
-  '小山丘': '#a05000',
-  '遠東': '#555',
-  '春光': '#c62828',
-  '先覺': '#a05000',
-  '如何': '#0a5ea8',
-  '銀河文化': '#5c35a0',
-  '三民': '#2e7d32',
-  '方智': '#bf5600',
-  '地平線': '#00796b'
+  '維京': '#555555',
+  '台灣東方': '#555555',
+  '方言文化': '#555555',
+  '漫遊者': '#555555',
+  '圓神': '#555555',
+  '城邦': '#555555',
+  '小魯': '#555555',
+  '聯經': '#555555',
+  '小宇宙': '#555555',
+  '大家': '#555555',
+  '上誼': '#555555',
+  '小山丘': '#555555',
+  '遠東': '#555555',
+  '春光': '#555555',
+  '先覺': '#555555',
+  '如何': '#555555',
+  '銀河文化': '#555555',
+  '三民': '#555555',
+  '方智': '#555555',
+  '地平線': '#555555'
 };
 function pubColor(p) {
   for (const k in PUB_COLOR) if (p && p.includes(k)) return PUB_COLOR[k];
@@ -7800,7 +7800,7 @@ function CoursePanel({
     style: {
       marginTop: 6,
       padding: "8px 10px",
-      background: "#EEF2F8",
+      background: "#EDE5D8",
       borderRadius: 7
     }
   }, /*#__PURE__*/React.createElement("div", {
