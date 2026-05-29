@@ -475,14 +475,14 @@ const {
   useCallback
 } = React;
 const CAT_COLOR = {
-  gov: "#6B6050",
-  local: "#6B6050",
-  other: "#6B6050"
+  gov: "#555555",
+  local: "#555555",
+  other: "#555555"
 };
 const CAT_BG = {
   gov: "#DDD5C4",
-  local: "#D4CBBE",
-  other: "#CAC3B8"
+  local: "#C8D8D4",
+  other: "#DDD0C8"
 };
 const CAT_LABEL = {
   gov: "市政府",
@@ -2886,10 +2886,10 @@ function App() {
       border: "none",
       cursor: "pointer",
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       letterSpacing: ".3px",
       background: homeTab === k ? "#1F2A44" : "transparent",
-      color: homeTab === k ? "#F0EAE0" : "#888",
+      color: homeTab === k ? "#C6A75E" : "#888",
       fontFamily: "inherit",
       transition: "background .2s,color .2s"
     }
@@ -7548,7 +7548,7 @@ function CourseMiniCard({
       ...pill(c.feePaid ? "#1F2A44" : "#7A6251", c.feePaid ? "#E8E4DC" : "#E8DABB"),
       marginLeft: "auto"
     }
-  }, c.feePaid ? "✓ 已入帳" : "· 待入帳"), onEdit && /*#__PURE__*/React.createElement("button", {
+  }, null), onEdit && /*#__PURE__*/React.createElement("button", {
     onClick: e => {
       e.stopPropagation();
       onEdit();
