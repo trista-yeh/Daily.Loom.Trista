@@ -505,7 +505,7 @@ const ROUTINE = {
   },
   translate: {
     label: "翻譯",
-    color: "#2A4060",
+    color: "#2A3A54",
     bg: "#E8E2D2"
   },
   material: {
@@ -2368,7 +2368,7 @@ function App() {
       feeBank: taskForm.feeBank || "",
       feeDate: taskForm.feeDate || "",
       feePaid: false,
-      color: taskForm.type === "translate" ? "#2A4060" : "#6B6558",
+      color: taskForm.type === "translate" ? "#2A3A54" : "#6B6558",
       bg: taskForm.type === "translate" ? "#E8E2D2" : taskForm.type === "other" ? "#D5DFF0" : "#E8E0CC"
     };
     const upd = [...tasks, t],
@@ -2572,7 +2572,7 @@ function App() {
         feeBank: transForm.feeBank || "",
         feeDate: transForm.feeDate || "",
         feePaid: false,
-        color: "#2A4060",
+        color: "#2A3A54",
         bg: "#E8E2D2"
       };
       const tupd = [...tasks, newTask];
@@ -2919,7 +2919,7 @@ function App() {
         fontSize: 12,
         fontWeight: 700,
         letterSpacing: "1.5px",
-        color: "#2A4060",
+        color: "#2A3A54",
         textTransform: "uppercase"
       }
     }, "\u27D0 \u7FFB\u8B6F"), /*#__PURE__*/React.createElement("span", {
@@ -4064,9 +4064,9 @@ function App() {
       padding: "6px",
       borderRadius: 7,
       border: "1.5px solid",
-      borderColor: taskForm.type === k ? k === "translate" ? "#2A4060" : k === "other" ? "#4A6080" : "#6B6558" : "#e0e0e0",
+      borderColor: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A6080" : "#6B6558" : "#e0e0e0",
       background: taskForm.type === k ? k === "translate" ? "#E8E2D2" : k === "other" ? "#D5DFF0" : "#E8E0CC" : "#fff",
-      color: taskForm.type === k ? k === "translate" ? "#2A4060" : k === "other" ? "#4A6080" : "#6B6558" : "#888",
+      color: taskForm.type === k ? k === "translate" ? "#2A3A54" : k === "other" ? "#4A6080" : "#6B6558" : "#888",
       fontSize: 14,
       fontWeight: 600,
       cursor: "pointer",
@@ -4201,8 +4201,8 @@ function WeekView({
     bg: "#EDE8DC",
     label: "麥穗黃"
   }, {
-    c: "#7A9E82",
-    bg: "#E2EEE4",
+    c: "#2A4038",
+    bg: "#D4E5DF",
     label: "苔蘚綠"
   }, {
     c: "#888888",
@@ -4420,8 +4420,8 @@ function WeekView({
         }, /*#__PURE__*/React.createElement("div", {
           style: {
             fontSize: 11,
-            color: "#555",
-            fontWeight: 700,
+            color: "#2A4038",
+            fontWeight: 400,
             lineHeight: 1.3,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -4455,8 +4455,8 @@ function WeekView({
         }, /*#__PURE__*/React.createElement("div", {
           style: {
             fontSize: 10,
-            color: "#555",
-            fontWeight: 700,
+            color: "#2A3A54",
+            fontWeight: 400,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap"
@@ -4489,8 +4489,8 @@ function WeekView({
       }, /*#__PURE__*/React.createElement("div", {
         style: {
           fontSize: 10,
-          color: "#555",
-          fontWeight: 700,
+          color: "#2A3A54",
+          fontWeight: 400,
           lineHeight: 1.3
         }
       }, label, " \u7FFB\u8B6F"), /*#__PURE__*/React.createElement("div", {
@@ -4516,7 +4516,7 @@ function WeekView({
         style: {
           gridRow: `${g.rowStart} / span ${clamp}`,
           gridColumn: 1,
-          background: "#E4EAF0",
+          background: "#D4DDE8",
           borderRadius: 4,
           padding: "3px 4px",
           cursor: "pointer",
@@ -4971,7 +4971,7 @@ function MonthView({
         padding: "3px 1px",
         borderRadius: 4,
         cursor: ts.length ? "pointer" : "default",
-        background: ds === TODAY_STR ? "#1F2A44" : ts.length ? "#D4DCED" : isWeekend ? "#f8f5f0" : "transparent"
+        background: ds === TODAY_STR ? "#1F2A44" : ts.length ? "#D4DDE8" : isWeekend ? "#f8f5f0" : "transparent"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -5122,7 +5122,7 @@ function TodosView({
       gap: 6,
       marginBottom: 8
     }
-  }, [["備課待辦", pending.length, "#4E5E5C", "#D4DCED"], ["一般待辦", fpend.length, "#4A6080", "#D5DFF0"], ["已完成", done.length + fdone.length, "#6B6558", "#E8E0CC"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
+  }, [["備課待辦", pending.length, "#4E5E5C", "#D4DDE8"], ["一般待辦", fpend.length, "#4A6080", "#D5DFF0"], ["已完成", done.length + fdone.length, "#6B6558", "#E8E0CC"]].map(([l, v, c, bg]) => /*#__PURE__*/React.createElement("div", {
     key: l,
     style: {
       flex: 1,
@@ -5834,7 +5834,7 @@ function TaskRow({
       padding: "1px 6px",
       borderRadius: 99,
       background: "#E8E2D2",
-      color: "#2A4060",
+      color: "#2A3A54",
       flexShrink: 0,
       whiteSpace: "nowrap"
     }
@@ -7234,14 +7234,14 @@ function DoneTaskList({
   }, doneTranslate.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GroupHeader, {
     icon: "\u27D0",
     label: "\u7FFB\u8B6F",
-    color: "#2A4060",
+    color: "#2A3A54",
     line: "#E8E2D2",
     count: doneTranslate.length
   }), doneTranslate.map(t => /*#__PURE__*/React.createElement(TaskCard, {
     key: t.id,
     t: t,
     label: "\u7FFB\u8B6F",
-    tc: t.color || "#2A4060",
+    tc: t.color || "#2A3A54",
     tb: t.bg || "#E8E2D2",
     onEdit: onEditTrans ? () => onEditTrans(t) : undefined,
     onUndo: () => undoTask(t.id),
@@ -7298,7 +7298,7 @@ function MiniGanttRow({
   const d = t.deadline ? daysUntil(t.deadline) : null;
   const uc = d === null ? "#4A6080" : d <= 3 ? "#c0392b" : d <= 7 ? "#e67e22" : "#4E5E5C";
   const typeLabel = t.type === "translate" ? "翻譯" : t.type === "material" || t.type === "teach" ? "備課" : t.type === "other" ? "其他" : "待辦";
-  const tc = t.color || (t.type === "translate" ? "#2A4060" : t.type === "teach" || t.type === "material" ? "#6B6558" : "#4A6080");
+  const tc = t.color || (t.type === "translate" ? "#2A3A54" : t.type === "teach" || t.type === "material" ? "#6B6558" : "#4A6080");
   const tb = t.bg || (t.type === "translate" ? "#E8E2D2" : t.type === "teach" || t.type === "material" ? "#E8E0CC" : "#D5DFF0");
   const todos = t.todos || [];
   const pendCount = todos.filter(x => !x.done).length;
@@ -7346,7 +7346,7 @@ function MiniGanttRow({
   }, typeLabel), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 13,
-      fontWeight: 700,
+      fontWeight: 400,
       flex: 1,
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -7359,7 +7359,7 @@ function MiniGanttRow({
       padding: "2px 7px",
       borderRadius: 5,
       border: "1px solid #DDD5C4",
-      background: open ? "#D4DCED" : "#FDFAF5",
+      background: open ? "#D4DDE8" : "#FDFAF5",
       color: open ? "#4E5E5C" : "#aaa",
       cursor: "pointer",
       fontFamily: "inherit",
@@ -7721,7 +7721,7 @@ function CoursePanel({
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      background: "#E4EAF0",
+      background: "#D4DDE8",
       border: "none",
       borderRadius: 9,
       padding: "10px",
