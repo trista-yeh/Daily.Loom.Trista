@@ -475,9 +475,9 @@ const {
   useCallback
 } = React;
 const CAT_COLOR = {
-  gov: "#555555",
-  local: "#555555",
-  other: "#555555"
+  gov: "#555",
+  local: "#555",
+  other: "#555"
 };
 const CAT_BG = {
   gov: "#DDD5C4",
@@ -2819,14 +2819,14 @@ function App() {
       letterSpacing: 3,
       color: "#C6A75E",
       marginBottom: 5,
-      fontWeight: 500,
+      fontWeight: 400,
       textTransform: "uppercase"
     }
   }, "A SOFTER WAY TO MANAGE LIFE"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: "'Raleway',sans-serif",
       fontWeight: 300,
-      fontSize: 22,
+      fontSize: 16,
       letterSpacing: "6px",
       lineHeight: 1.1,
       color: "#FDFAF5",
@@ -4283,7 +4283,7 @@ function WeekView({
       flex: 1,
       textAlign: "center",
       fontSize: 14,
-      fontWeight: 500,
+      fontWeight: 400,
       color: "#555"
     }
   }, weekOff === 0 ? "本週　" : "", weekDates[0], "\u2013", weekDates[6]), /*#__PURE__*/React.createElement("button", {
@@ -4339,7 +4339,7 @@ function WeekView({
   }, HOURS.map(hr => /*#__PURE__*/React.createElement("div", {
     key: hr,
     style: {
-      fontSize: 9,
+      fontSize: 11,
       color: "#ccc",
       textAlign: "right",
       paddingRight: 2,
@@ -4465,7 +4465,7 @@ function WeekView({
       }
     }), [...transDeadlines, ...transPaid].map((t, idx) => {
       const isPaid = transPaid.includes(t);
-      const bg = isPaid ? "#E8E4DC" : "#E8E0CC";
+      const bg = isPaid ? "#E8E4DC" : "#EDE0CF";
       const shortName = t.name.replace(/^\[.*?\]\s*/, "");
       const label = isPaid ? "◈" : "⟐";
       return /*#__PURE__*/React.createElement("div", {
@@ -4496,7 +4496,7 @@ function WeekView({
       }, label, " \u7FFB\u8B6F"), /*#__PURE__*/React.createElement("div", {
         style: {
           fontSize: 10,
-          color: "#777",
+          color: "#888",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap"
@@ -4534,7 +4534,7 @@ function WeekView({
       }, "\u229E \u6388\u8AB2"), /*#__PURE__*/React.createElement("div", {
         style: {
           fontSize: 10,
-          color: "#777",
+          color: "#888",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap"
@@ -4633,7 +4633,7 @@ function WeekView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#555",
       marginBottom: 3
     }
@@ -4674,7 +4674,7 @@ function WeekView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#555",
       marginBottom: 3
     }
@@ -4703,7 +4703,7 @@ function WeekView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#555",
       marginBottom: 3
     }
@@ -4732,7 +4732,7 @@ function WeekView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#555",
       marginBottom: 5
     }
@@ -4764,7 +4764,7 @@ function WeekView({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#555",
       marginBottom: 3
     }
@@ -5871,7 +5871,7 @@ function TaskRow({
   }, "\u9810\u8A08 ", r.feeDate)), onEdit && /*#__PURE__*/React.createElement("button", {
     onClick: () => onEdit(r),
     style: {
-      fontSize: 15,
+      fontSize: 13,
       padding: "0 3px",
       cursor: "pointer",
       fontFamily: "inherit",
@@ -5883,7 +5883,7 @@ function TaskRow({
   }, "\u270E"), hasFee && (isPaid ? /*#__PURE__*/React.createElement("button", {
     onClick: () => onMarkPaid(r),
     style: {
-      fontSize: 10,
+      fontSize: 11,
       padding: "2px 5px",
       borderRadius: 99,
       border: "1px solid #ddd",
@@ -6307,7 +6307,7 @@ function TransView({
       border: "none",
       cursor: "pointer",
       fontSize: 12,
-      fontWeight: 500,
+      fontWeight: 400,
       fontFamily: "inherit",
       background: transTab === k ? "#1F2A44" : "transparent",
       color: transTab === k ? "#C6A75E" : "#999"
@@ -6425,7 +6425,7 @@ function TransView({
           borderRadius: 99,
           background: dl.bg,
           color: dl.color,
-          fontWeight: 500,
+          fontWeight: 400,
           flexShrink: 0,
           marginTop: 2
         }
@@ -6505,7 +6505,7 @@ function TransView({
       borderRadius: 6,
       border: "1px solid #E8E0D4",
       background: "#FDFAF5",
-      color: "#777",
+      color: "#888",
       fontSize: 12,
       fontFamily: "inherit"
     }
@@ -6850,7 +6850,7 @@ function TransView({
         justifyContent: "center",
         overflow: "hidden",
         marginBottom: 7,
-        fontSize: 22,
+        fontSize: 16,
         color: "#C6B89A",
         cursor: "pointer"
       }
@@ -7608,7 +7608,7 @@ function TransPanel({
     style: {
       fontSize: 14,
       fontWeight: 700,
-      color: "#444",
+      color: "#555",
       marginBottom: 2
     }
   }, title), publisher && /*#__PURE__*/React.createElement("div", {
@@ -7655,7 +7655,7 @@ function TransPanel({
   }, t.feePaid ? "✓ 已入帳" : "· 待入帳")), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      color: "#444"
+      color: "#555"
     }
   }, "\u91D1\u984D\uFF1A", /*#__PURE__*/React.createElement("strong", null, t.fee)), t.feeBank && /*#__PURE__*/React.createElement("div", {
     style: {
@@ -7716,7 +7716,7 @@ function CoursePanel({
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      background: "#E8E0CC",
+      background: "#D8E4EC",
       border: "none",
       borderRadius: 9,
       padding: "10px",
@@ -7744,9 +7744,9 @@ function CoursePanel({
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 15,
+      fontSize: 14,
       fontWeight: 700,
-      color: "#333"
+      color: "#1F2A44"
     }
   }, c.date), /*#__PURE__*/React.createElement("span", {
     style: {
@@ -7758,26 +7758,26 @@ function CoursePanel({
       fontSize: 12,
       padding: "1px 7px",
       borderRadius: 99,
-      background: "#D4DCE8",
+      background: CAT_BG[c.category] || "#DDD5C4",
       color: "#555"
     }
   }, CAT_LABEL[c.category])), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      color: "#666",
+      color: "#555",
       marginBottom: c.content ? 3 : 0
     }
   }, "\uD83D\uDCCD ", c.location), c.content && /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      color: "#444",
+      color: "#555",
       marginBottom: 3,
       lineHeight: 1.5
     }
   }, c.content), c.assistants?.length > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      color: "#666",
+      color: "#555",
       marginBottom: 3
     }
   }, "\xB7 \u52A9\u6559\uFF1A", c.assistants.join("、")), c.slideUrl && /*#__PURE__*/React.createElement("a", {
@@ -7800,7 +7800,7 @@ function CoursePanel({
     style: {
       marginTop: 6,
       padding: "8px 10px",
-      background: "#EDE5D8",
+      background: "#C8D8E4",
       borderRadius: 7
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -7832,7 +7832,7 @@ function CoursePanel({
   }, c.feePaid ? "✓ 已入帳" : "· 標記入帳")), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
-      color: "#444"
+      color: "#555"
     }
   }, "\u91D1\u984D\uFF1A", /*#__PURE__*/React.createElement("strong", null, c.fee)), c.feeBank && /*#__PURE__*/React.createElement("div", {
     style: {
